@@ -16,17 +16,17 @@ import com.ohadshai.savta.databinding.FragmentUserSettingsBinding;
 
 public class UserSettingsFragment extends Fragment {
 
-    private UserSettingsViewModel _userSettingsVM;
+    private UserSettingsViewModel _viewModel;
     private FragmentUserSettingsBinding _binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _userSettingsVM = new ViewModelProvider(this).get(UserSettingsViewModel.class);
+        _viewModel = new ViewModelProvider(this).get(UserSettingsViewModel.class);
 
         _binding = FragmentUserSettingsBinding.inflate(inflater, container, false);
         View root = _binding.getRoot();
 
         final TextView textView = _binding.textSlideshow;
-        _userSettingsVM.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        _viewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

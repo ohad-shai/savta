@@ -1,4 +1,4 @@
-package com.ohadshai.savta.ui.fragments.home;
+package com.ohadshai.savta.ui.fragments.feed;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,21 +12,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.ohadshai.savta.databinding.FragmentHomeBinding;
+import com.ohadshai.savta.databinding.FragmentFeedBinding;
 
-public class HomeFragment extends Fragment {
+public class FeedFragment extends Fragment {
 
-    private HomeViewModel _homeVM;
-    private FragmentHomeBinding _binding;
+    private FeedViewModel _viewModel;
+    private FragmentFeedBinding _binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _homeVM = new ViewModelProvider(this).get(HomeViewModel.class);
+        _viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false);
+        _binding = FragmentFeedBinding.inflate(inflater, container, false);
         View root = _binding.getRoot();
 
         final TextView textView = _binding.textHome;
-        _homeVM.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        _viewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

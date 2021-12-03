@@ -11,7 +11,8 @@
         android:theme="@style/Theme.Savta">
         <activity
             android:name=".ui.activities.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Savta.NoActionBar" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"

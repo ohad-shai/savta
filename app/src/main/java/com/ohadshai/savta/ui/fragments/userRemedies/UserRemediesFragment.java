@@ -16,17 +16,17 @@ import com.ohadshai.savta.databinding.FragmentUserRemediesBinding;
 
 public class UserRemediesFragment extends Fragment {
 
-    private UserRemediesViewModel _userRemediesVM;
+    private UserRemediesViewModel _viewModel;
     private FragmentUserRemediesBinding _binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _userRemediesVM = new ViewModelProvider(this).get(UserRemediesViewModel.class);
+        _viewModel = new ViewModelProvider(this).get(UserRemediesViewModel.class);
 
         _binding = FragmentUserRemediesBinding.inflate(inflater, container, false);
         View root = _binding.getRoot();
 
         final TextView textView = _binding.textGallery;
-        _userRemediesVM.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        _viewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
