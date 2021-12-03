@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Savta">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Savta.NoActionBar">

@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.ohadshai.savta.ui.home.HomeFragment"
+        android:name="com.ohadshai.savta.ui.fragments.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.ohadshai.savta.ui.gallery.GalleryFragment"
+        android:name="com.ohadshai.savta.ui.fragments.userRemedies.UserRemediesFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_user_remedies" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.ohadshai.savta.ui.slideshow.SlideshowFragment"
+        android:name="com.ohadshai.savta.ui.fragments.userSettings.UserSettingsFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_user_settings" />
 </navigation>
