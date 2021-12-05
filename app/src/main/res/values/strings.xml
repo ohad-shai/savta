@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">סבתא!</string>
-    <string name="navigation_drawer_open">פתיחת תפריט</string>
-    <string name="navigation_drawer_close">סגירת תפריט</string>
-    <string name="nav_header_title">אוהד שי</string>
-    <string name="nav_header_subtitle">ohad12131@gmail.com</string>
-    <string name="nav_header_desc">ראש הניווט</string>
     <string name="action_about">אודות</string>
 
+    <!--  General  -->
+    <string name="close">סגירה</string>
+
+    <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
     <string name="menu_user_remedies">התרופות שפרסמתי</string>
     <string name="menu_user_settings">הגדרות חשבון</string>
+    <string name="menu_logout">התנתקות</string>
 </resources>

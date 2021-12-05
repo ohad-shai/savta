@@ -1,13 +1,14 @@
 package com.ohadshai.savta.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.ActivityMainBinding;
+import com.ohadshai.savta.ui.dialogs.AboutDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(_binding.getRoot());
 
         setSupportActionBar(_binding.appBarMain.toolbar);
-        _binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+        _binding.appBarMain.fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_feed, R.id.nav_user_remedies, R.id.nav_user_settings)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this, R.id.content_main_nav_host);
         NavigationUI.setupActionBarWithNavController(this, navController, _AppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -64,9 +66,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                AboutDialog.make(this).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this, R.id.content_main_nav_host);
         return NavigationUI.navigateUp(navController, _AppBarConfiguration) || super.onSupportNavigateUp();
     }
-    
+
 }
