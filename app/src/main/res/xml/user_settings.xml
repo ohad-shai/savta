@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="pref_fullName"
+        app:summary="אוהד שי"
+        app:title="@string/full_name" />
+
+    <Preference
+        app:key="pref_email"
+        app:summary="ohad12131@gmail.com"
+        app:title="@string/email" />
+
+    <Preference
+        app:key="pref_changePassword"
+        app:title="@string/change_password" />
+
+    <Preference
+        app:key="pref_deleteAccount"
+        app:title="@string/delete_account" />
+
+</PreferenceScreen>

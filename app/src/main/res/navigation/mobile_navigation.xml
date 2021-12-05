@@ -9,7 +9,14 @@
         android:id="@+id/nav_feed"
         android:name="com.ohadshai.savta.ui.fragments.feed.FeedFragment"
         android:label="@string/menu_feed"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed">
+        <action
+            android:id="@+id/action_nav_feed_to_nav_user_remedies"
+            app:destination="@id/nav_user_remedies" />
+        <action
+            android:id="@+id/action_nav_feed_to_nav_user_settings"
+            app:destination="@id/nav_user_settings" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_user_remedies"

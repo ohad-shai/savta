@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">סבתא!</string>
-    <string name="action_about">אודות</string>
 
     <!--  General  -->
+    <string name="about">אודות</string>
     <string name="close">סגירה</string>
+    <string name="full_name">שם מלא</string>
+    <string name="email">דוא\"ל</string>
+    <string name="change_password">שינוי סיסמה</string>
+    <string name="delete_account">מחיקת חשבון</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>

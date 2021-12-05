@@ -6,12 +6,11 @@
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/text</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/primary</item>
-        <item name="colorSecondaryVariant">@color/primary</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary</item>
         <item name="colorOnSecondary">@color/text</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.Savta.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -23,6 +22,11 @@
         <item name="colorPrimary">@color/background_highlight</item>
     </style>
 
+    <style name="Theme.Savta.Control" parent="Theme.Savta">
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/white</item>
+    </style>
+
 
     <!--  No Action Bar  -->
     <style name="Theme.Savta.NoActionBar">
@@ -30,7 +34,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-
+    
     <style name="Theme.Savta.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Savta.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
