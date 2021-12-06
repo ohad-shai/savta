@@ -10,4 +10,6 @@
     <color name="background_highlight">#FF999999</color>
     <color name="green">#67CA41</color>
     <color name="light_green">#CCECBF</color>
+    <color name="background">#FFF7F7F7</color>
+    <color name="danger">#FFC00000</color>
 </resources>
