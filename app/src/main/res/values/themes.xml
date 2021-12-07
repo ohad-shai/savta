@@ -34,7 +34,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    
+
     <style name="Theme.Savta.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Savta.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

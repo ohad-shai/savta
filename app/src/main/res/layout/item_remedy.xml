@@ -73,7 +73,7 @@
                         android:layout_weight="0"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
-                        android:text="נגד"
+                        android:text="@string/against"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textSize="14sp" />

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/nav_feed">
+
+    <fragment
+        android:id="@+id/nav_feed"
+        android:name="com.ohadshai.savta.ui.fragments.feed.FeedFragment"
+        android:label="@string/menu_feed"
+        tools:layout="@layout/fragment_feed">
+        <action
+            android:id="@+id/action_nav_feed_to_nav_user_remedies"
+            app:destination="@id/nav_user_remedies" />
+        <action
+            android:id="@+id/action_nav_feed_to_nav_user_settings"
+            app:destination="@id/nav_user_settings" />
+        <action
+            android:id="@+id/action_nav_feed_to_nav_remedy_create"
+            app:destination="@id/nav_remedy_create"
+            app:enterAnim="@anim/go_top_enter"
+            app:exitAnim="@anim/go_top_exit"
+            app:popEnterAnim="@anim/go_bottom_enter"
+            app:popExitAnim="@anim/go_bottom_exit" />
+        <action
+            android:id="@+id/action_nav_feed_to_nav_remedy_details"
+            app:destination="@id/nav_remedy_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_user_remedies"
+        android:name="com.ohadshai.savta.ui.fragments.userRemedies.UserRemediesFragment"
+        android:label="@string/menu_user_remedies"
+        tools:layout="@layout/fragment_user_remedies">
+        <action
+            android:id="@+id/action_nav_user_remedies_to_nav_remedy_create"
+            app:destination="@id/nav_remedy_create"
+            app:enterAnim="@anim/go_top_enter"
+            app:exitAnim="@anim/go_top_exit"
+            app:popEnterAnim="@anim/go_bottom_enter"
+            app:popExitAnim="@anim/go_bottom_exit" />
+        <action
+            android:id="@+id/action_nav_user_remedies_to_nav_remedy_details"
+            app:destination="@id/nav_remedy_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_user_settings"
+        android:name="com.ohadshai.savta.ui.fragments.userSettings.UserSettingsFragment"
+        android:label="@string/menu_user_settings"
+        tools:layout="@layout/fragment_user_settings" />
+    <fragment
+        android:id="@+id/nav_remedy_create"
+        android:name="com.ohadshai.savta.ui.fragments.remedyCreate.RemedyCreateFragment"
+        android:label="@string/remedy_create_title"
+        tools:layout="@layout/fragment_remedy_create" />
+    <fragment
+        android:id="@+id/nav_remedy_details"
+        android:name="com.ohadshai.savta.ui.fragments.remedyDetails.RemedyDetailsFragment"
+        tools:layout="@layout/fragment_remedy_details">
+        <action
+            android:id="@+id/action_nav_remedy_details_to_nav_remedy_edit"
+            app:destination="@id/nav_remedy_edit" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_remedy_edit"
+        android:name="com.ohadshai.savta.ui.fragments.remedyEdit.RemedyEditFragment"
+        android:label="@string/remedy_edit_title"
+        tools:layout="@layout/fragment_remedy_edit" />
+</navigation>

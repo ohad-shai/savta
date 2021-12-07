@@ -8,10 +8,31 @@
     <string name="email">דוא\"ל</string>
     <string name="change_password">שינוי סיסמה</string>
     <string name="delete_account">מחיקת חשבון</string>
+    <string name="against">נגד</string>
+    <string name="image">תמונה</string>
+    <string name="remedy_image">תמונת התרופה</string>
+    <string name="camera">מצלמה</string>
+    <string name="gallery">גלריה</string>
+    <string name="delete_image">מחיקת תמונה</string>
+    <string name="add">הוספה</string>
+    <string name="update">עידכון</string>
+    <string name="edit">עריכה</string>
+    <string name="delete">מחיקה</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
     <string name="menu_user_remedies">התרופות שפרסמתי</string>
     <string name="menu_user_settings">הגדרות חשבון</string>
     <string name="menu_logout">התנתקות</string>
+
+    <!--  Remedy Entity  -->
+    <string name="remedy_problem_desc">הבעיה הרפואית</string>
+    <string name="remedy_name">שם התרופה</string>
+    <string name="remedy_treatment_desc">אופן הטיפול</string>
+
+    <!--  Remedy Create Fragment  -->
+    <string name="remedy_create_title">תרופה חדשה</string>
+
+    <!--  Remedy Edit Fragment  -->
+    <string name="remedy_edit_title">עריכת תרופה</string>
 </resources>

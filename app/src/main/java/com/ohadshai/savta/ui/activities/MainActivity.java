@@ -51,7 +51,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         _binding.appBarMain.fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                // Navigates to the "Create Remedy" fragment, but performs the right action (transition animation):
+                NavDestination navDestination = _navController.getCurrentDestination();
+                if (navDestination != null) {
+                    if (navDestination.getId() == R.id.nav_feed) {
+                        _navController.navigate(R.id.action_nav_feed_to_nav_remedy_create);
+                    } else if (navDestination.getId() == R.id.nav_user_remedies) {
+                        _navController.navigate(R.id.action_nav_user_remedies_to_nav_remedy_create);
+                    }
+                    updateLayoutByNavScreen(R.id.nav_remedy_create);
+                }
             }
         });
 
@@ -80,16 +89,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.content_main_nav_host);
         boolean result = (NavigationUI.navigateUp(navController, _AppBarConfiguration) || super.onSupportNavigateUp());
-        this.checkToUpdateLayoutByCurrentFragment();
+        this.updateLayoutByCurrentNavScreen();
         return result;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.updateLayoutByCurrentNavScreen();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        // Checks to update the activity layout by the current fragment displaying:
-        this.checkToUpdateLayoutByCurrentFragment();
+        this.updateLayoutByCurrentNavScreen();
     }
 
     @Override
@@ -100,13 +113,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_feed:
             case R.id.nav_user_remedies:
             case R.id.nav_user_settings:
-                this.updateLayoutByFragment(id);
+                this.updateLayoutByNavScreen(id);
                 break;
             case R.id.nav_logout:
                 Snackbar.make(_binding.appBarMain.getRoot(), "התנתקות", Snackbar.LENGTH_LONG).show();
                 break;
             default:
-                throw new IndexOutOfBoundsException("Undefined menu item id in the navigation drawer.");
+                throw new IndexOutOfBoundsException("Undefined menu item id in the navigation drawer was selected.");
         }
         // This is for maintaining the behavior of the Navigation Drawer:
         NavigationUI.onNavDestinationSelected(item, _navController);
@@ -119,36 +132,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //region Private Methods
 
     /**
-     * Updates the layout of the activity, according to the current fragment displaying.
+     * Updates the activity's layout, according to the specified navigation screen (from the nav-graph).
      *
-     * @param id The id of the fragment's menu item resource in the navigation drawer.
+     * @param id The id of the navigation screen (from the nav-graph) to update the activity's layout to.
      */
-    private void updateLayoutByFragment(int id) {
-        switch (id) {
-            case R.id.nav_feed:
-                _binding.appBarMain.fabAdd.show();
-                _binding.appBarMain.frameToolbarLogo.setVisibility(View.VISIBLE);
-                break;
-            case R.id.nav_user_remedies:
-                _binding.appBarMain.fabAdd.show();
-                _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
-                break;
-            case R.id.nav_user_settings:
-                _binding.appBarMain.fabAdd.hide();
-                _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Undefined menu item id in the navigation drawer, that is able to update the layout.");
+    private void updateLayoutByNavScreen(int id) {
+        if (id == R.id.nav_feed) {
+            _binding.appBarMain.fabAdd.show();
+            _binding.appBarMain.frameToolbarLogo.setVisibility(View.VISIBLE);
+        } else if (id == R.id.nav_user_remedies) {
+            _binding.appBarMain.fabAdd.show();
+            _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
+        } else {
+            _binding.appBarMain.fabAdd.hide();
+            _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
         }
     }
 
     /**
-     * Checks if to update the activity layout by the current fragment displaying.
+     * Updates the activity's layout, according to the current navigation screen displaying (from the nav-graph).
      */
-    private void checkToUpdateLayoutByCurrentFragment() {
+    private void updateLayoutByCurrentNavScreen() {
         NavDestination navDestination = _navController.getCurrentDestination();
         if (navDestination != null) {
-            this.updateLayoutByFragment(navDestination.getId());
+            this.updateLayoutByNavScreen(navDestination.getId());
         }
     }
 
