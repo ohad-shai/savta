@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_login"
+    app:startDestination="@id/nav_login">
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.ohadshai.savta.ui.fragments.login.LoginFragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_nav_login_to_nav_register"
+            app:destination="@id/nav_register"
+            app:enterAnim="@anim/go_left_enter"
+            app:exitAnim="@anim/go_left_exit"
+            app:popEnterAnim="@anim/go_right_enter"
+            app:popExitAnim="@anim/go_right_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.ohadshai.savta.ui.fragments.register.RegisterFragment"
+        tools:layout="@layout/fragment_register" />
+</navigation>

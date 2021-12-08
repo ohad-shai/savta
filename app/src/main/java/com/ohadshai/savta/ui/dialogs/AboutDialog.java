@@ -1,9 +1,13 @@
 package com.ohadshai.savta.ui.dialogs;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,9 +30,39 @@ public class AboutDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.dialog_about, null);
 
-        ImageButton imgBtnClose = view.findViewById(R.id.dialog_about_img_btn_close);
-        imgBtnClose.setOnClickListener(v -> {
-            dismiss();
+        TextView txtAppVersion = view.findViewById(R.id.txtAppVersion);
+        try {
+            PackageInfo packageInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            txtAppVersion.setText(packageInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        TextView txtProjectGit = view.findViewById(R.id.txtProjectGit);
+        txtProjectGit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_project_git_link)));
+                startActivity(browserIntent);
+            }
+        });
+
+        TextView txtOhadLinkedIn = view.findViewById(R.id.txtOhadLinkedIn);
+        txtOhadLinkedIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_ohad_linkedin_link)));
+                startActivity(browserIntent);
+            }
+        });
+
+        TextView txtOhadGitHub = view.findViewById(R.id.txtOhadGitHub);
+        txtOhadGitHub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_ohad_github_link)));
+                startActivity(browserIntent);
+            }
         });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(_activity);
@@ -54,12 +88,9 @@ public class AboutDialog extends DialogFragment {
 
     /**
      * Shows the "About" dialog.
-     *
-     * @return Returns the instance of the dialog.
      */
-    public AboutDialog show() {
+    public void show() {
         this.show(_activity.getSupportFragmentManager(), "dialog_about");
-        return this;
     }
 
     //endregion

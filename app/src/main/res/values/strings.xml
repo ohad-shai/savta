@@ -40,4 +40,15 @@
 
     <!--  Remedy Edit Fragment  -->
     <string name="remedy_edit_title">עריכת תרופה</string>
+
+    <!--  About Dialog  -->
+    <string name="about_version">גירסה:</string>
+    <string name="about_desc_1">\"סבתא!\" היא אפליקציה חברתית לפירסום של תרופות סבתא בין אנשים. באפשרות המשתמש לפרסם לקהילת המשתמשים תרופת סבתא כלשהי שעוזרת בבעיה רפואית מסויימת, וכמו כן לצפות בתרופות סבתא שפורסמו ע\"י משתמשים אחרים.</string>
+    <string name="about_desc_2">האפליקציה פותחה ע\"י אוהד שי, כפרויקט סוף הקורס: \"פיתוח אפליקציות אנדרואיד\" במסגרת לימודי תואר ראשון במדעי המחשב.</string>
+    <string name="about_project_git">קישור לקוד הפרויקט:</string>
+    <string name="about_project_git_link"><u>https://github.com/ohad-shai/savta</u></string>
+    <string name="about_ohad_linkedin"><u>קישור ל-LinkedIn שלי</u></string>
+    <string name="about_ohad_linkedin_link"><u>https://www.linkedin.com/in/ohad-shai</u></string>
+    <string name="about_ohad_github"><u>קישור ל-GitHub שלי</u></string>
+    <string name="about_ohad_github_link"><u>https://github.com/ohad-shai</u></string>
 </resources>

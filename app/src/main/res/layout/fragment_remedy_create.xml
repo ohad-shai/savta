@@ -150,6 +150,7 @@
         android:layout_height="60dp"
         android:layout_weight="0"
         app:backgroundCustom="@drawable/light_green_gradient"
+        app:enabled="false"
         app:text="@string/add" />
 
 </LinearLayout>
