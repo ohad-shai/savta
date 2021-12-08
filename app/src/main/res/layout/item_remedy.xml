@@ -32,7 +32,7 @@
                 android:layout_height="116dp"
                 android:layout_margin="1dp"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/remedy_image" />
+                app:srcCompat="@drawable/remedy_default_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,6 +45,9 @@
                     android:id="@+id/item_remedy_lblName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
                     android:text="שם תרופה כלשהו"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -90,6 +93,9 @@
                     android:id="@+id/item_remedy_lblProblem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
                     android:text="בעיה רפואית כלשהי"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"

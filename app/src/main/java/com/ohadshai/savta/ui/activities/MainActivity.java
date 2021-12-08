@@ -1,5 +1,6 @@
 package com.ohadshai.savta.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override

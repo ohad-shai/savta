@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.entities.Remedy;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -63,7 +65,12 @@ public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapte
                 // Navigates to the details fragment of the remedy:
 
             });
-            //_imgPhoto.setImageResource(R.drawable.student_photo);
+            Picasso.get()
+                    .load(remedy.getImageUrl())
+                    .placeholder(R.drawable.remedy_default_image)
+                    .resize(92, 116)
+                    .centerCrop()
+                    .into(_imgPhoto);
             _lblName.setText(remedy.getName());
             _lblProblem.setText(remedy.getProblemDescription());
         }

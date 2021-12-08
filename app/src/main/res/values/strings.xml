@@ -4,13 +4,18 @@
     <!--  General  -->
     <string name="about">אודות</string>
     <string name="close">סגירה</string>
+    <string name="login">התחברות</string>
+    <string name="register">הרשמה</string>
+    <string name="password">סיסמה</string>
+    <string name="enter">כניסה</string>
     <string name="full_name">שם מלא</string>
     <string name="email">דוא\"ל</string>
     <string name="change_password">שינוי סיסמה</string>
     <string name="delete_account">מחיקת חשבון</string>
     <string name="against">נגד</string>
     <string name="image">תמונה</string>
-    <string name="remedy_image">תמונת התרופה</string>
+    <string name="image_upload">העלאת תמונה</string>
+    <string name="image_change">שינוי תמונה</string>
     <string name="camera">מצלמה</string>
     <string name="gallery">גלריה</string>
     <string name="delete_image">מחיקת תמונה</string>

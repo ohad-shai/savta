@@ -94,7 +94,6 @@
                 android:padding="20sp"
                 android:textColor="@color/secondary" />
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -145,15 +144,12 @@
         android:layout_weight="0"
         android:background="?android:attr/listDivider" />
 
-    <Button
+    <com.ohadshai.savta.utils.views.ProgressButton
         android:id="@+id/remedy_create_btnAdd"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_weight="0"
-        android:padding="16dp"
-        android:text="@string/add"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        app:backgroundCustom="@drawable/light_green_gradient"
+        app:text="@string/add" />
 
 </LinearLayout>

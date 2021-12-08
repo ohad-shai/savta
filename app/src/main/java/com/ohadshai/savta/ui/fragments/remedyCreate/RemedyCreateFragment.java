@@ -54,11 +54,12 @@ public class RemedyCreateFragment extends Fragment {
      */
     private void openImageOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.remedy_image);
         String[] imageOptions;
         if (_isImageLoaded) {
+            builder.setTitle(R.string.image_change);
             imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery), getString(R.string.delete_image)};
         } else {
+            builder.setTitle(R.string.image_upload);
             imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery)};
         }
         builder.setItems(imageOptions, new DialogInterface.OnClickListener() {
