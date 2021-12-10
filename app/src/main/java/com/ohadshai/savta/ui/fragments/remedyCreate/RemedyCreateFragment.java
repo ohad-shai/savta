@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyCreateBinding;
 import com.ohadshai.savta.utils.AlertDialogRtlHelper;
@@ -29,7 +27,7 @@ public class RemedyCreateFragment extends Fragment {
         _viewModel = new ViewModelProvider(this).get(RemedyCreateViewModel.class);
 
         _binding = FragmentRemedyCreateBinding.inflate(inflater, container, false);
-        View root = _binding.getRoot();
+        View rootView = _binding.getRoot();
 
         _binding.remedyCreateFlPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +36,7 @@ public class RemedyCreateFragment extends Fragment {
             }
         });
 
-        return root;
+        return rootView;
     }
 
     @Override

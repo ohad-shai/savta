@@ -1,15 +1,14 @@
 package com.ohadshai.savta.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -20,9 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.ActivityMainBinding;
-import com.ohadshai.savta.ui.dialogs.AboutDialog;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NavController.OnDestinationChangedListener {
 
     private AppBarConfiguration _AppBarConfiguration;
     private ActivityMainBinding _binding;
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setOpenableLayout(_binding.drawerLayout)
                 .build();
         _navController = Navigation.findNavController(this, R.id.content_main_nav_host);
+        _navController.addOnDestinationChangedListener(this);
         NavigationUI.setupActionBarWithNavController(this, _navController, _AppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, _navController);
         navigationView.setNavigationItemSelectedListener(this);
@@ -67,57 +66,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_about:
-                AboutDialog.make(this).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.content_main_nav_host);
-        boolean result = (NavigationUI.navigateUp(navController, _AppBarConfiguration) || super.onSupportNavigateUp());
-        this.updateLayoutByCurrentNavScreen();
-        return result;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        this.updateLayoutByCurrentNavScreen();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        this.updateLayoutByCurrentNavScreen();
+        return (NavigationUI.navigateUp(navController, _AppBarConfiguration) || super.onSupportNavigateUp());
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Here we're overriding the Navigation Drawer item selection behavior, for our customization:
+        // In order to be able to listen on item selections, we need to override the Navigation Drawer item selection behavior:
         int id = item.getItemId();
-        switch (id) {
-            case R.id.nav_feed:
-            case R.id.nav_user_remedies:
-            case R.id.nav_user_settings:
-                this.updateLayoutByNavScreen(id);
-                break;
-            case R.id.nav_logout:
-                Snackbar.make(_binding.appBarMain.getRoot(), "התנתקות", Snackbar.LENGTH_LONG).show();
-                break;
-            default:
-                throw new IndexOutOfBoundsException("Undefined menu item id in the navigation drawer was selected.");
+        if (id == R.id.nav_logout) {
+            Snackbar.make(_binding.appBarMain.getRoot(), "התנתקות", Snackbar.LENGTH_LONG).show();
         }
         // This is for maintaining the behavior of the Navigation Drawer:
         NavigationUI.onNavDestinationSelected(item, _navController);
@@ -125,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             _binding.drawerLayout.closeDrawer(GravityCompat.START);
         }
         return true;
+    }
+
+    @Override
+    public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+        this.updateLayoutByNavScreen(destination.getId());
     }
 
     //region Private Methods
@@ -144,16 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             _binding.appBarMain.fabAdd.hide();
             _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Updates the activity's layout, according to the current navigation screen displaying (from the nav-graph).
-     */
-    private void updateLayoutByCurrentNavScreen() {
-        NavDestination navDestination = _navController.getCurrentDestination();
-        if (navDestination != null) {
-            this.updateLayoutByNavScreen(navDestination.getId());
         }
     }
 

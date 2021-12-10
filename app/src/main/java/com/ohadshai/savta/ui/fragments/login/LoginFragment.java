@@ -21,10 +21,10 @@ public class LoginFragment extends Fragment {
         _viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
         _binding = FragmentLoginBinding.inflate(inflater, container, false);
-        View root = _binding.getRoot();
+        View rootView = _binding.getRoot();
 
 
-        return root;
+        return rootView;
     }
 
     @Override

@@ -19,10 +19,10 @@
         <action
             android:id="@+id/action_nav_feed_to_nav_remedy_create"
             app:destination="@id/nav_remedy_create"
-            app:enterAnim="@anim/go_top_enter"
-            app:exitAnim="@anim/go_top_exit"
-            app:popEnterAnim="@anim/go_bottom_enter"
-            app:popExitAnim="@anim/go_bottom_exit" />
+            app:enterAnim="@anim/slide_bottom_enter"
+            app:exitAnim="@anim/slide_bottom_exit"
+            app:popEnterAnim="@anim/slide_top_enter"
+            app:popExitAnim="@anim/slide_top_exit" />
         <action
             android:id="@+id/action_nav_feed_to_nav_remedy_details"
             app:destination="@id/nav_remedy_details" />
@@ -36,10 +36,10 @@
         <action
             android:id="@+id/action_nav_user_remedies_to_nav_remedy_create"
             app:destination="@id/nav_remedy_create"
-            app:enterAnim="@anim/go_top_enter"
-            app:exitAnim="@anim/go_top_exit"
-            app:popEnterAnim="@anim/go_bottom_enter"
-            app:popExitAnim="@anim/go_bottom_exit" />
+            app:enterAnim="@anim/slide_bottom_enter"
+            app:exitAnim="@anim/slide_bottom_exit"
+            app:popEnterAnim="@anim/slide_top_enter"
+            app:popExitAnim="@anim/slide_top_exit" />
         <action
             android:id="@+id/action_nav_user_remedies_to_nav_remedy_details"
             app:destination="@id/nav_remedy_details" />

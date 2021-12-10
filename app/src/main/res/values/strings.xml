@@ -41,6 +41,13 @@
     <!--  Remedy Edit Fragment  -->
     <string name="remedy_edit_title">עריכת תרופה</string>
 
+    <!--  Remedy Details Fragment  -->
+    <string name="remedy_details_problem">הבעיה</string>
+    <string name="remedy_details_solution">הפתרון</string>
+    <string name="remedy_details_treatment">אופן הטיפול</string>
+    <string name="remedy_details_posted_by">פורסם ע\"י</string>
+    <string name="remedy_details_posted_on_date">בתאריך</string>
+
     <!--  About Dialog  -->
     <string name="about_version">גירסה:</string>
     <string name="about_desc_1">\"סבתא!\" היא אפליקציה חברתית לפירסום של תרופות סבתא בין אנשים. באפשרות המשתמש לפרסם לקהילת המשתמשים תרופת סבתא כלשהי שעוזרת בבעיה רפואית מסויימת, וכמו כן לצפות בתרופות סבתא שפורסמו ע\"י משתמשים אחרים.</string>

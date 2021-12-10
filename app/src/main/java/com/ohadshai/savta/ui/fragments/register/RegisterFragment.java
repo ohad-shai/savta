@@ -20,10 +20,10 @@ public class RegisterFragment extends Fragment {
         _viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
 
         _binding = FragmentRegisterBinding.inflate(inflater, container, false);
-        View root = _binding.getRoot();
+        View rootView = _binding.getRoot();
 
 
-        return root;
+        return rootView;
     }
 
     @Override

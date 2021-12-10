@@ -1,11 +1,14 @@
 package com.ohadshai.savta.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Represents a user in the application.
  */
-public class User {
+public class User implements Parcelable {
     private int _id;
     private String _firstName;
     private String _lastName;
@@ -17,11 +20,13 @@ public class User {
 
     }
 
-    public User(int id, String firstName, String lastName, String email) {
+    public User(int id, String firstName, String lastName, String email, String password, Date dateRegistered) {
         this._id = id;
         this._firstName = firstName;
         this._lastName = lastName;
         this._email = email;
+        this._password = password;
+        this._dateRegistered = dateRegistered;
     }
 
     //region Public API
@@ -61,6 +66,46 @@ public class User {
     public void setEmail(String email) {
         this._email = email;
     }
+
+    //region [Parcelable]
+
+    private User(Parcel in) {
+        _id = in.readInt();
+        _firstName = in.readString();
+        _lastName = in.readString();
+        _email = in.readString();
+        _password = in.readString();
+        _dateRegistered = new Date(in.readLong());
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeString(_firstName);
+        dest.writeString(_lastName);
+        dest.writeString(_email);
+        dest.writeString(_password);
+        dest.writeLong(_dateRegistered.getTime());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    //endregion
 
     //endregion
 

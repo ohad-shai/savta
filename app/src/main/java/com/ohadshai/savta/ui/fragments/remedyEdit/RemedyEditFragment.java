@@ -25,7 +25,7 @@ public class RemedyEditFragment extends Fragment {
         _viewModel = new ViewModelProvider(this).get(RemedyEditViewModel.class);
 
         _binding = FragmentRemedyEditBinding.inflate(inflater, container, false);
-        View root = _binding.getRoot();
+        View rootView = _binding.getRoot();
 
         _binding.remedyEditFlPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,7 +34,7 @@ public class RemedyEditFragment extends Fragment {
             }
         });
 
-        return root;
+        return rootView;
     }
 
     @Override
