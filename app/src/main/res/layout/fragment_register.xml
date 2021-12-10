@@ -30,7 +30,8 @@
             android:hint="@string/full_name"
             android:inputType="textPersonName"
             android:padding="16dp"
-            android:textColor="@color/secondary"
+            android:textColor="@color/text"
+            android:textColorHint="@color/secondary"
             android:textDirection="rtl" />
     </androidx.cardview.widget.CardView>
 
@@ -53,7 +54,8 @@
             android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:padding="16dp"
-            android:textColor="@color/secondary"
+            android:textColor="@color/text"
+            android:textColorHint="@color/secondary"
             android:textDirection="rtl" />
     </androidx.cardview.widget.CardView>
 
@@ -76,7 +78,8 @@
             android:inputType="textPassword"
             android:padding="16dp"
             android:textAlignment="textEnd"
-            android:textColor="@color/secondary"
+            android:textColor="@color/text"
+            android:textColorHint="@color/secondary"
             android:textDirection="rtl" />
     </androidx.cardview.widget.CardView>
 

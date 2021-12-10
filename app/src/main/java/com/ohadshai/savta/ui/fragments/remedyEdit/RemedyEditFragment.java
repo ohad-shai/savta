@@ -7,25 +7,53 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.transition.TransitionInflater;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyEditBinding;
+import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.utils.AlertDialogRtlHelper;
+import com.squareup.picasso.Picasso;
 
 public class RemedyEditFragment extends Fragment {
 
     private RemedyEditViewModel _viewModel;
     private FragmentRemedyEditBinding _binding;
     private boolean _isImageLoaded;
+    private Remedy _remedy;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Doing some cool transitions here:
+        TransitionInflater inflater = TransitionInflater.from(requireContext());
+        setAllowEnterTransitionOverlap(false);
+        setSharedElementEnterTransition(inflater.inflateTransition(android.R.transition.move));
+        setSharedElementReturnTransition(inflater.inflateTransition(android.R.transition.move));
+        setAllowReturnTransitionOverlap(false);
+        setExitTransition(inflater.inflateTransition(android.R.transition.fade));
+        setReturnTransition(inflater.inflateTransition(android.R.transition.fade));
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _viewModel = new ViewModelProvider(this).get(RemedyEditViewModel.class);
 
         _binding = FragmentRemedyEditBinding.inflate(inflater, container, false);
         View rootView = _binding.getRoot();
+
+        // Gets the remedy information from the details fragment:
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            throw new IllegalStateException("Bundle with [Remedy] object must be provided to this fragment.");
+        }
+        Remedy remedy = Remedy.fromBundle(bundle);
+        this.bindData(remedy);
 
         _binding.remedyEditFlPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +72,25 @@ public class RemedyEditFragment extends Fragment {
     }
 
     //region Private Methods
+
+    private void bindData(Remedy remedy) {
+        _remedy = remedy;
+        ViewCompat.setTransitionName(_binding.remedyEditImgPhoto, ("remedy_image_" + remedy.getId()));
+        if (remedy.getImageUrl() != null) {
+            _binding.remedyEditLlPhotoLabel.setVisibility(View.GONE);
+            Picasso.get()
+                    .load(remedy.getImageUrl())
+                    .noFade()
+                    .into(_binding.remedyEditImgPhoto);
+            _isImageLoaded = true;
+        } else {
+            _binding.remedyEditLlPhotoLabel.setVisibility(View.VISIBLE);
+            _isImageLoaded = false;
+        }
+        _binding.remedyEditTxtProblem.setText(remedy.getProblemDescription());
+        _binding.remedyEditTxtName.setText(remedy.getName());
+        _binding.remedyEditTxtTreatment.setText(remedy.getTreatmentDescription());
+    }
 
     /**
      * Opens the image options dialog.

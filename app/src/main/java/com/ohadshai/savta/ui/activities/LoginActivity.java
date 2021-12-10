@@ -4,19 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.ActivityLoginBinding;
-import com.ohadshai.savta.databinding.ActivityMainBinding;
-import com.ohadshai.savta.utils.views.ProgressButton;
 
 public class LoginActivity extends AppCompatActivity {
 

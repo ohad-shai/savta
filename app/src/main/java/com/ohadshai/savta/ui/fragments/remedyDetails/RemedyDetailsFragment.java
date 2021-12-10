@@ -7,6 +7,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,12 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.transition.TransitionInflater;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyDetailsBinding;
 import com.ohadshai.savta.entities.Remedy;
+import com.ohadshai.savta.utils.SharedElementsUtil;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +34,7 @@ public class RemedyDetailsFragment extends Fragment {
     private RemedyDetailsViewModel _viewModel;
     private FragmentRemedyDetailsBinding _binding;
     private ActionBar _actionBar;
+    private Remedy _remedy;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,10 +81,20 @@ public class RemedyDetailsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_edit) {
-            Snackbar.make(getView(), "עריכה", Snackbar.LENGTH_SHORT).show();
+            View rootView = requireView();
+            // Navigates to the details fragment of the remedy (with a transition of shared elements):
+            ImageView imgRemedyPhoto = rootView.findViewById(R.id.imgRemedyPhoto);
+
+            Navigation.findNavController(rootView).navigate(
+                    R.id.action_nav_remedy_details_to_nav_remedy_edit,
+                    Remedy.toBundle(_remedy),
+                    null,
+                    SharedElementsUtil.build(imgRemedyPhoto)
+            );
             return true;
         } else if (id == R.id.action_delete) {
-            Snackbar.make(getView(), "מחיקה", Snackbar.LENGTH_SHORT).show();
+            // TODO... do delete
+            Navigation.findNavController(requireView()).popBackStack();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -95,6 +109,7 @@ public class RemedyDetailsFragment extends Fragment {
     //region Private Methods
 
     private void bindData(Remedy remedy) {
+        _remedy = remedy;
         _actionBar.setTitle(remedy.getName());
         ViewCompat.setTransitionName(_binding.flContainer, ("remedy_container_" + remedy.getId()));
         ViewCompat.setTransitionName(_binding.imgRemedyPhoto, ("remedy_image_" + remedy.getId()));
