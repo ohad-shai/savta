@@ -60,9 +60,7 @@ public class FeedFragment extends Fragment {
                 ImageView imgRemedyPhoto = view.findViewById(R.id.item_remedy_imgPhoto);
 
                 Navigation.findNavController(view).navigate(
-                        R.id.action_nav_feed_to_nav_remedy_details,
-                        Remedy.toBundle(remedy),
-                        null,
+                        FeedFragmentDirections.actionNavFeedToNavRemedyDetails(remedy),
                         SharedElementsUtil.build(cardContainer, imgRemedyPhoto)
                 );
             }

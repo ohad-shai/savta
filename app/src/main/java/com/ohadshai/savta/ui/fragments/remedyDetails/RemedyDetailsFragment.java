@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +22,7 @@ import androidx.transition.TransitionInflater;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyDetailsBinding;
 import com.ohadshai.savta.entities.Remedy;
+import com.ohadshai.savta.ui.fragments.userRemedies.UserRemediesFragmentDirections;
 import com.ohadshai.savta.utils.SharedElementsUtil;
 import com.squareup.picasso.Picasso;
 
@@ -60,12 +60,8 @@ public class RemedyDetailsFragment extends Fragment {
 
         _actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
-        // Gets the remedy information based on the data from the list:
-        Bundle bundle = getArguments();
-        if (bundle == null) {
-            throw new IllegalStateException("Bundle with [Remedy] object must be provided to this fragment.");
-        }
-        Remedy remedy = Remedy.fromBundle(bundle);
+        // Gets the remedy information:
+        Remedy remedy = RemedyDetailsFragmentArgs.fromBundle(getArguments()).getRemedy();
         this.bindData(remedy);
 
         return rootView;
@@ -86,9 +82,7 @@ public class RemedyDetailsFragment extends Fragment {
             ImageView imgRemedyPhoto = rootView.findViewById(R.id.imgRemedyPhoto);
 
             Navigation.findNavController(rootView).navigate(
-                    R.id.action_nav_remedy_details_to_nav_remedy_edit,
-                    Remedy.toBundle(_remedy),
-                    null,
+                    RemedyDetailsFragmentDirections.actionNavRemedyDetailsToNavRemedyEdit(_remedy),
                     SharedElementsUtil.build(imgRemedyPhoto)
             );
             return true;

@@ -62,10 +62,17 @@
         <action
             android:id="@+id/action_nav_remedy_details_to_nav_remedy_edit"
             app:destination="@id/nav_remedy_edit" />
+        <argument
+            android:name="remedy"
+            app:argType="com.ohadshai.savta.entities.Remedy" />
     </fragment>
     <fragment
         android:id="@+id/nav_remedy_edit"
         android:name="com.ohadshai.savta.ui.fragments.remedyEdit.RemedyEditFragment"
         android:label="@string/remedy_edit_title"
-        tools:layout="@layout/fragment_remedy_edit" />
+        tools:layout="@layout/fragment_remedy_edit" >
+        <argument
+            android:name="remedy"
+            app:argType="com.ohadshai.savta.entities.Remedy" />
+    </fragment>
 </navigation>

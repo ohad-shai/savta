@@ -17,6 +17,7 @@ import androidx.transition.TransitionInflater;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyEditBinding;
 import com.ohadshai.savta.entities.Remedy;
+import com.ohadshai.savta.ui.fragments.remedyDetails.RemedyDetailsFragmentArgs;
 import com.ohadshai.savta.utils.AlertDialogRtlHelper;
 import com.squareup.picasso.Picasso;
 
@@ -48,11 +49,7 @@ public class RemedyEditFragment extends Fragment {
         View rootView = _binding.getRoot();
 
         // Gets the remedy information from the details fragment:
-        Bundle bundle = getArguments();
-        if (bundle == null) {
-            throw new IllegalStateException("Bundle with [Remedy] object must be provided to this fragment.");
-        }
-        Remedy remedy = Remedy.fromBundle(bundle);
+        Remedy remedy = RemedyEditFragmentArgs.fromBundle(getArguments()).getRemedy();
         this.bindData(remedy);
 
         _binding.remedyEditFlPhotoButton.setOnClickListener(new View.OnClickListener() {
