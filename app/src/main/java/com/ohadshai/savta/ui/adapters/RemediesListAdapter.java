@@ -21,7 +21,7 @@ import java.util.List;
  * Represents a recycler view adapter for list of remedies.
  */
 public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapter.ViewHolder> {
-    private final List<Remedy> _remedies;
+    private List<Remedy> _remedies;
     private OnItemClickListener _onItemClickListener;
 
     public RemediesListAdapter(List<Remedy> remedies) {
@@ -53,6 +53,16 @@ public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapte
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
         _onItemClickListener = listener;
+    }
+
+    /**
+     * Sets the list of remedies to the adapter.
+     *
+     * @param remedies The list of remedies to set.
+     */
+    public void setRemedies(List<Remedy> remedies) {
+        this._remedies = remedies;
+        this.notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

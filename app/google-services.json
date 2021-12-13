@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1051784575964",
+    "project_id": "savta-ae67f",
+    "storage_bucket": "savta-ae67f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051784575964:android:b9adf63088602e25a46d19",
+        "android_client_info": {
+          "package_name": "com.ohadshai.savta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1051784575964-v2chi3l4kb3jik2hdbmk87nkri19rsau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq9jc3ZIEKJY_mU3hI15tg5XuDmU-7J48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1051784575964-v2chi3l4kb3jik2hdbmk87nkri19rsau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

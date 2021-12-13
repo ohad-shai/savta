@@ -5,19 +5,29 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 /**
  * Represents a "Grandma Remedy" that a user can post/view.
  */
+@Entity(tableName = "Remedies")
 public class Remedy implements Parcelable {
+    @PrimaryKey
+    @NonNull
     private int _id;
+    @NonNull
     private String _name;
+    @NonNull
     private String _problemDescription;
+    @NonNull
     private String _treatmentDescription;
     private String _imageUrl;
+    @NonNull
     private User _userPosted;
+    @NonNull
     private Date _datePosted;
 
     public Remedy() {

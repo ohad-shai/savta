@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ohadshai.savta.R;
-import com.ohadshai.savta.data.RemediesModel;
+import com.ohadshai.savta.data.utils.OnGetCompleteListener;
+import com.ohadshai.savta.data.sql.RemediesModelSql;
 import com.ohadshai.savta.databinding.FragmentUserRemediesBinding;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.ui.adapters.RemediesListAdapter;
@@ -27,7 +28,9 @@ public class UserRemediesFragment extends Fragment {
 
     private UserRemediesViewModel _viewModel;
     private FragmentUserRemediesBinding _binding;
+    private RecyclerView _rvRemediesList;
     private RemediesListAdapter _adapter;
+    private List<Remedy> _remedies;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _viewModel = new ViewModelProvider(this).get(UserRemediesViewModel.class);
@@ -35,11 +38,18 @@ public class UserRemediesFragment extends Fragment {
         _binding = FragmentUserRemediesBinding.inflate(inflater, container, false);
         View rootView = _binding.getRoot();
 
-        List<Remedy> remedies = RemediesModel.instance.getAll();
-        RecyclerView rvRemediesList = _binding.rvRemediesList;
-        rvRemediesList.setHasFixedSize(true);
-        rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
-        _adapter = new RemediesListAdapter(remedies);
+//        RemediesModelSql.instance.getAll(new OnGetCompleteListener<List<Remedy>>() {
+//            @Override
+//            public void onComplete(List<Remedy> object) {
+//                _remedies = object;
+//                _adapter.setRemedies(_remedies);
+//                updateListState();
+//            }
+//        });
+        _rvRemediesList = _binding.rvRemediesList;
+        _rvRemediesList.setHasFixedSize(true);
+        _rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        _adapter = new RemediesListAdapter(_remedies);
         _adapter.setOnItemClickListener(new RemediesListAdapter.OnItemClickListener() {
             @Override
             public void onClick(Remedy remedy, View view) {
@@ -53,7 +63,8 @@ public class UserRemediesFragment extends Fragment {
                 );
             }
         });
-        rvRemediesList.setAdapter(_adapter);
+        _rvRemediesList.setAdapter(_adapter);
+        updateListState();
 
         return rootView;
     }
@@ -69,5 +80,24 @@ public class UserRemediesFragment extends Fragment {
         super.onDestroyView();
         _binding = null;
     }
+
+    //region Private Methods
+
+    /**
+     * Updates the state of the list by the current size, to show empty message if needed.
+     */
+    private void updateListState() {
+        //_progressBar.setVisibility(View.GONE);
+
+        if (_remedies.size() < 1) {
+            _rvRemediesList.setVisibility(View.GONE);
+            //_btnMoviesNotFound.setVisibility(View.VISIBLE);
+        } else {
+            //_btnMoviesNotFound.setVisibility(View.GONE);
+            _rvRemediesList.setVisibility(View.VISIBLE);
+        }
+    }
+
+    //endregion
 
 }

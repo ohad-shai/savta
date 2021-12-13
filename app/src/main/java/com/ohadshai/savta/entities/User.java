@@ -3,17 +3,30 @@ package com.ohadshai.savta.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import java.util.Date;
 
 /**
  * Represents a user in the application.
  */
+@Entity(tableName = "Users", indices = {@Index(value = {"_email"}, unique = true)})
 public class User implements Parcelable {
+    @PrimaryKey
+    @NonNull
     private int _id;
+    @NonNull
     private String _firstName;
+    @NonNull
     private String _lastName;
+    @NonNull
     private String _email;
+    @NonNull
     private String _password;
+    @NonNull
     private Date _dateRegistered;
 
     public User() {
