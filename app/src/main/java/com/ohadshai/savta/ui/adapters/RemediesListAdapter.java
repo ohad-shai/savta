@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ohadshai.savta.R;
@@ -21,10 +22,10 @@ import java.util.List;
  * Represents a recycler view adapter for list of remedies.
  */
 public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapter.ViewHolder> {
-    private List<Remedy> _remedies;
+    private LiveData<List<Remedy>> _remedies;
     private OnItemClickListener _onItemClickListener;
 
-    public RemediesListAdapter(List<Remedy> remedies) {
+    public RemediesListAdapter(LiveData<List<Remedy>> remedies) {
         _remedies = remedies;
     }
 
@@ -37,13 +38,16 @@ public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Remedy remedy = _remedies.get(position);
+        Remedy remedy = _remedies.getValue().get(position);
         holder.bind(remedy);
     }
 
     @Override
     public int getItemCount() {
-        return _remedies.size();
+        if (_remedies.getValue() == null)
+            return 0;
+        else
+            return _remedies.getValue().size();
     }
 
     /**
@@ -53,16 +57,6 @@ public class RemediesListAdapter extends RecyclerView.Adapter<RemediesListAdapte
      */
     public void setOnItemClickListener(OnItemClickListener listener) {
         _onItemClickListener = listener;
-    }
-
-    /**
-     * Sets the list of remedies to the adapter.
-     *
-     * @param remedies The list of remedies to set.
-     */
-    public void setRemedies(List<Remedy> remedies) {
-        this._remedies = remedies;
-        this.notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

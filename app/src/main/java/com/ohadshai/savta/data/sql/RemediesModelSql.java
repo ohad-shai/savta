@@ -24,7 +24,7 @@ public class RemediesModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();
@@ -43,7 +43,7 @@ public class RemediesModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete(remedy);
+                listener.onSuccess(remedy);
             }
         };
         task.execute();
@@ -62,7 +62,7 @@ public class RemediesModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete(remedies);
+                listener.onSuccess(remedies);
             }
         };
         task.execute();
@@ -79,7 +79,7 @@ public class RemediesModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();
@@ -96,7 +96,7 @@ public class RemediesModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();

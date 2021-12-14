@@ -1,19 +1,19 @@
 package com.ohadshai.savta.ui.fragments.userRemedies;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.ohadshai.savta.data.RemediesModel;
+import com.ohadshai.savta.entities.Remedy;
+
+import java.util.List;
 
 public class UserRemediesViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private final LiveData<List<Remedy>> _remedies = RemediesModel.instance.getAll();
 
-    public UserRemediesViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is user remedies fragment");
+    public LiveData<List<Remedy>> getRemedies() {
+        return _remedies;
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
 }

@@ -1,19 +1,19 @@
 package com.ohadshai.savta.ui.fragments.feed;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.ohadshai.savta.data.RemediesModel;
+import com.ohadshai.savta.entities.Remedy;
+
+import java.util.List;
 
 public class FeedViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private final LiveData<List<Remedy>> _remedies = RemediesModel.instance.getAll();
 
-    public FeedViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is Feed fragment");
+    public LiveData<List<Remedy>> getRemedies() {
+        return _remedies;
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
 }

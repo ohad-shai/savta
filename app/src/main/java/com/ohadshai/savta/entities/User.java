@@ -15,6 +15,9 @@ import java.util.Date;
  */
 @Entity(tableName = "Users", indices = {@Index(value = {"_email"}, unique = true)})
 public class User implements Parcelable {
+
+    //region Private Members
+
     @PrimaryKey
     @NonNull
     private int _id;
@@ -29,17 +32,9 @@ public class User implements Parcelable {
     @NonNull
     private Date _dateRegistered;
 
+    //endregion
+
     public User() {
-
-    }
-
-    public User(int id, String firstName, String lastName, String email, String password, Date dateRegistered) {
-        this._id = id;
-        this._firstName = firstName;
-        this._lastName = lastName;
-        this._email = email;
-        this._password = password;
-        this._dateRegistered = dateRegistered;
     }
 
     //region Public API
@@ -78,6 +73,24 @@ public class User implements Parcelable {
 
     public void setEmail(String email) {
         this._email = email;
+    }
+
+    @NonNull
+    public String getPassword() {
+        return _password;
+    }
+
+    public void setPassword(@NonNull String _password) {
+        this._password = _password;
+    }
+
+    @NonNull
+    public Date getDateRegistered() {
+        return _dateRegistered;
+    }
+
+    public void setDateRegistered(@NonNull Date _dateRegistered) {
+        this._dateRegistered = _dateRegistered;
     }
 
     //region [Parcelable]

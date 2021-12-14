@@ -1,6 +1,5 @@
 package com.ohadshai.savta.entities;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,6 +14,9 @@ import java.util.Date;
  */
 @Entity(tableName = "Remedies")
 public class Remedy implements Parcelable {
+
+    //region Private Members
+
     @PrimaryKey
     @NonNull
     private int _id;
@@ -30,45 +32,10 @@ public class Remedy implements Parcelable {
     @NonNull
     private Date _datePosted;
 
-    public Remedy() {
-
-    }
-
-    public Remedy(int id, String name, String problemDescription, String treatmentDescription, String imageUrl, User userPosted, Date datePosted) {
-        this._id = id;
-        this._name = name;
-        this._problemDescription = problemDescription;
-        this._treatmentDescription = treatmentDescription;
-        this._imageUrl = imageUrl;
-        this._userPosted = userPosted;
-        this._datePosted = datePosted;
-    }
-
-    //region Public Static API
-
-    /**
-     * Converts the specified remedy to a bundle object.
-     *
-     * @param remedy The remedy object to convert from.
-     * @return Returns the bundle object created.
-     */
-    public static Bundle toBundle(@NonNull Remedy remedy) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("remedy", remedy);
-        return bundle;
-    }
-
-    /**
-     * Converts the specified bundle to a remedy object.
-     *
-     * @param bundle The bundle object to convert from.
-     * @return Returns the remedy object created.
-     */
-    public static Remedy fromBundle(@NonNull Bundle bundle) {
-        return (Remedy) bundle.getParcelable("remedy");
-    }
-
     //endregion
+
+    public Remedy() {
+    }
 
     //region Public API
 

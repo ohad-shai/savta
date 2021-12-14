@@ -22,7 +22,7 @@ public class UsersModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();
@@ -41,7 +41,7 @@ public class UsersModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete(user);
+                listener.onSuccess(user);
             }
         };
         task.execute();
@@ -60,7 +60,7 @@ public class UsersModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete(user);
+                listener.onSuccess(user);
             }
         };
         task.execute();
@@ -77,7 +77,7 @@ public class UsersModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();
@@ -94,7 +94,7 @@ public class UsersModelSql {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                listener.onComplete();
+                listener.onSuccess();
             }
         };
         task.execute();

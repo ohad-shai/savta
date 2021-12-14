@@ -6,5 +6,7 @@ package com.ohadshai.savta.data.utils;
  * @param <T> The type of the entity.
  */
 public interface OnGetCompleteListener<T> {
-    void onComplete(T object);
+    void onSuccess(T object);
+
+    void onFailure();
 }

@@ -23,6 +23,7 @@
     <string name="update">עידכון</string>
     <string name="edit">עריכה</string>
     <string name="delete">מחיקה</string>
+    <string name="failure_message">אירעה שגיאה, אנא נסו שנית מאוחר יותר.</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
