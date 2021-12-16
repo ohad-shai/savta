@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
@@ -67,6 +68,15 @@ public class FeedFragment extends Fragment {
             }
         });
         rvRemediesList.setAdapter(adapter);
+
+        SwipeRefreshLayout swipeRefreshLayout = _binding.swipeRefreshLayout;
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                reloadData();
+            }
+        });
 
         // Listens to data changes (while the fragment is alive):
         _viewModel.getRemedies().observe(getViewLifecycleOwner(), new Observer<List<Remedy>>() {

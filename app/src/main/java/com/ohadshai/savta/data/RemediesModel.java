@@ -1,13 +1,16 @@
 package com.ohadshai.savta.data;
 
+import android.content.SharedPreferences;
+
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.ohadshai.savta.data.firebase.RemediesModelFirebase;
 import com.ohadshai.savta.data.sql.RemediesModelSql;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
+import com.ohadshai.savta.utils.ApplicationContext;
+import com.ohadshai.savta.utils.SharedPreferencesUtil;
 
 import java.util.List;
 
@@ -22,8 +25,8 @@ public class RemediesModel {
 
     //region [LiveData] Members
 
-    MutableLiveData<List<Remedy>> _remediesList = new MutableLiveData<>();
-    MutableLiveData<Remedy> _remedy = new MutableLiveData<>();
+    LiveData<List<Remedy>> _remediesList;
+    LiveData<Remedy> _remedy;
 
     //endregion
 
@@ -51,17 +54,10 @@ public class RemediesModel {
      * @implNote NOTE: The main thread will never know when the updates will occur, so it is used mainly for listening (to data updates).
      */
     public LiveData<Remedy> get(int id) {
-        _modelFirebase.get(id, new OnGetCompleteListener<Remedy>() {
-            @Override
-            public void onSuccess(Remedy remedy) {
-                _remedy.setValue(remedy);
-            }
-
-            @Override
-            public void onFailure() {
-                // Do nothing.
-            }
-        });
+        if (_remedy == null) {
+            _remedy = _modelSql.get(id);
+            this.get(id, null);
+        }
         return _remedy;
     }
 
@@ -72,18 +68,7 @@ public class RemediesModel {
      * @implNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
      */
     public void get(int id, OnGetCompleteListener<Remedy> listener) {
-        _modelFirebase.get(id, new OnGetCompleteListener<Remedy>() {
-            @Override
-            public void onSuccess(Remedy remedy) {
-                _remedy.setValue(remedy);
-                listener.onSuccess(remedy);
-            }
 
-            @Override
-            public void onFailure() {
-                listener.onFailure();
-            }
-        });
     }
 
     /**
@@ -93,17 +78,10 @@ public class RemediesModel {
      * @implNote NOTE: The main thread will never know when the updates will occur, so it is used mainly for listening (to data updates).
      */
     public LiveData<List<Remedy>> getAll() {
-        _modelFirebase.getAll(new OnGetCompleteListener<List<Remedy>>() {
-            @Override
-            public void onSuccess(List<Remedy> remedies) {
-                _remediesList.setValue(remedies);
-            }
-
-            @Override
-            public void onFailure() {
-                // Do nothing.
-            }
-        });
+        if (_remediesList == null) {
+            _remediesList = _modelSql.getAll();
+            this.getAll(null);
+        }
         return _remediesList;
     }
 
@@ -114,16 +92,39 @@ public class RemediesModel {
      * @implNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
      */
     public void getAll(OnGetCompleteListener<List<Remedy>> listener) {
-        _modelFirebase.getAll(new OnGetCompleteListener<List<Remedy>>() {
+        // 1. Gets the local last update date indicator:
+        SharedPreferences sharedPreferences = ApplicationContext.context.getSharedPreferences(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, 0);
+        long lastUpdateDate = sharedPreferences.getLong(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, 0);
+
+        // 2. Gets all the updated records after the last update date, from Firebase:
+        _modelFirebase.getAll(lastUpdateDate, new OnGetCompleteListener<List<Remedy>>() {
             @Override
             public void onSuccess(List<Remedy> remedies) {
-                _remediesList.setValue(remedies);
-                listener.onSuccess(remedies);
+                // 3. Updates the local SQL DB with the updated records:
+                long highestDate = 0;
+                for (Remedy remedy : remedies) {
+                    _modelSql.create(remedy, null);
+                    if (remedy.getDateLastUpdated().getTime() > highestDate) {
+                        highestDate = remedy.getDateLastUpdated().getTime();
+                    }
+                }
+
+                // 4. Updates the local last update date indicator:
+                SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                spEditor.putLong(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, highestDate);
+                spEditor.apply();
+
+                // 5. Returns the data to the listeners:
+                if (listener != null) {
+                    listener.onSuccess(remedies);
+                }
             }
 
             @Override
             public void onFailure() {
-                listener.onFailure();
+                if (listener != null) {
+                    listener.onFailure();
+                }
             }
         });
     }

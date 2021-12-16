@@ -2,6 +2,8 @@ package com.ohadshai.savta.data.sql;
 
 import android.os.AsyncTask;
 
+import androidx.lifecycle.LiveData;
+
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
 import com.ohadshai.savta.entities.User;
@@ -47,23 +49,8 @@ public class UsersModelSql {
         task.execute();
     }
 
-    public void get(int id, OnGetCompleteListener<User> listener) {
-        AsyncTask task = new AsyncTask() {
-            User user;
-
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                user = AppLocalDb.db.usersDao().get(id);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                listener.onSuccess(user);
-            }
-        };
-        task.execute();
+    public LiveData<User> get(int id) {
+        return AppLocalDb.db.usersDao().get(id);
     }
 
     public void update(User user, OnCompleteListener listener) {

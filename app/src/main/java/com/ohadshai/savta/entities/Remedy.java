@@ -31,6 +31,8 @@ public class Remedy implements Parcelable {
     private User _userPosted;
     @NonNull
     private Date _datePosted;
+    @NonNull
+    private Date _dateLastUpdated;
 
     //endregion
 
@@ -95,6 +97,14 @@ public class Remedy implements Parcelable {
         this._datePosted = datePosted;
     }
 
+    public Date getDateLastUpdated() {
+        return _dateLastUpdated;
+    }
+
+    public void setDateLastUpdated(Date dateLastUpdated) {
+        this._dateLastUpdated = dateLastUpdated;
+    }
+
     //region [Parcelable]
 
     private Remedy(Parcel in) {
@@ -105,6 +115,7 @@ public class Remedy implements Parcelable {
         _imageUrl = in.readString();
         _userPosted = in.readParcelable(User.class.getClassLoader());
         _datePosted = new Date(in.readLong());
+        _dateLastUpdated = new Date(in.readLong());
     }
 
     public static final Parcelable.Creator<Remedy> CREATOR = new Parcelable.Creator<Remedy>() {
@@ -128,6 +139,7 @@ public class Remedy implements Parcelable {
         dest.writeString(_imageUrl);
         dest.writeParcelable(_userPosted, flags);
         dest.writeLong(_datePosted.getTime());
+        dest.writeLong(_dateLastUpdated.getTime());
     }
 
     @Override

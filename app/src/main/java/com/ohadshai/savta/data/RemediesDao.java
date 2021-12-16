@@ -1,5 +1,6 @@
 package com.ohadshai.savta.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,10 +21,10 @@ public interface RemediesDao {
     void create(Remedy remedy);
 
     @Query("SELECT * FROM Remedies WHERE _id = :id")
-    Remedy get(int id);
+    LiveData<Remedy> get(int id);
 
     @Query("SELECT * FROM Remedies")
-    List<Remedy> getAll();
+    LiveData<List<Remedy>> getAll();
 
     @Update
     void update(Remedy remedy);

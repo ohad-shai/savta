@@ -8,7 +8,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
-import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.entities.User;
 
 /**
@@ -19,6 +18,7 @@ public class UsersModelFirebase {
     //region Constants
 
     public static final String COLLECTION_NAME = "users";
+    public static final String FIELD_ID = "id";
     public static final String FIELD_FIRST_NAME = "first_name";
     public static final String FIELD_LAST_NAME = "last_name";
     public static final String FIELD_EMAIL = "email";
@@ -26,6 +26,8 @@ public class UsersModelFirebase {
     public static final String FIELD_DATE_REGISTERED = "date_registered";
 
     //endregion
+
+    //region Public API
 
     public void register(User user, OnCompleteListener listener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -100,5 +102,7 @@ public class UsersModelFirebase {
                     }
                 });
     }
+
+    //endregion
 
 }

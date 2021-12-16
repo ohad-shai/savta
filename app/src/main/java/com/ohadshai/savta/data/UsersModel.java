@@ -22,7 +22,7 @@ public class UsersModel {
 
     //region [LiveData] Members
 
-    MutableLiveData<User> _user = new MutableLiveData<>();
+    LiveData<User> _user;
 
     //endregion
 
@@ -61,18 +61,19 @@ public class UsersModel {
      * @implNote NOTE: The main thread will never know when the updates will occur, so it is used mainly for listening (to data updates).
      */
     public LiveData<User> get(int id) {
-        _modelFirebase.get(id, new OnGetCompleteListener<User>() {
-            @Override
-            public void onSuccess(User user) {
-                _user.setValue(user);
-            }
-
-            @Override
-            public void onFailure() {
-                // Do nothing.
-            }
-        });
-        return _user;
+//        _modelFirebase.get(id, new OnGetCompleteListener<User>() {
+//            @Override
+//            public void onSuccess(User user) {
+//                _user.setValue(user);
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                // Do nothing.
+//            }
+//        });
+//        return _user;
+        return null;
     }
 
     /**
@@ -82,18 +83,22 @@ public class UsersModel {
      * @implNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
      */
     public void get(int id, OnGetCompleteListener<User> listener) {
-        _modelFirebase.get(id, new OnGetCompleteListener<User>() {
-            @Override
-            public void onSuccess(User user) {
-                _user.setValue(user);
-                listener.onSuccess(user);
-            }
-
-            @Override
-            public void onFailure() {
-                listener.onFailure();
-            }
-        });
+//        _modelFirebase.get(id, new OnGetCompleteListener<User>() {
+//            @Override
+//            public void onSuccess(User user) {
+//                _user.setValue(user);
+//                if (listener != null) {
+//                    listener.onSuccess(user);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                if (listener != null) {
+//                    listener.onFailure();
+//                }
+//            }
+//        });
     }
 
     /**

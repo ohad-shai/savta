@@ -1,5 +1,6 @@
 package com.ohadshai.savta.data;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -7,10 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.entities.User;
-
-import java.util.List;
 
 /**
  * Represents the data access object to the users table.
@@ -25,7 +23,7 @@ public interface UsersDao {
     User login(int userId, String password);
 
     @Query("SELECT * FROM Users WHERE _id = :id")
-    User get(int id);
+    MutableLiveData<User> get(int id);
 
     @Update
     void update(User user);

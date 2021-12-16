@@ -15,12 +15,7 @@
         android:theme="@style/Theme.Savta">
         <activity
             android:name=".ui.activities.LoginActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Savta.NoActionBar" />
-        <activity
-            android:name=".ui.activities.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Savta.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Savta.NoActionBar" />
     </application>
 
 </manifest>

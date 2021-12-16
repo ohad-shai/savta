@@ -10,7 +10,11 @@ import java.util.List;
 
 public class FeedViewModel extends ViewModel {
 
-    private final LiveData<List<Remedy>> _remedies = RemediesModel.instance.getAll();
+    private final LiveData<List<Remedy>> _remedies;
+
+    public FeedViewModel() {
+        _remedies = RemediesModel.instance.getAll();
+    }
 
     public LiveData<List<Remedy>> getRemedies() {
         return _remedies;
