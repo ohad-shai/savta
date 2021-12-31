@@ -4,25 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.ohadshai.savta.R;
-import com.ohadshai.savta.data.utils.OnGetCompleteListener;
-import com.ohadshai.savta.data.sql.RemediesModelSql;
 import com.ohadshai.savta.databinding.FragmentUserRemediesBinding;
-import com.ohadshai.savta.entities.Remedy;
-import com.ohadshai.savta.ui.adapters.RemediesListAdapter;
-import com.ohadshai.savta.utils.SharedElementsUtil;
-
-import java.util.List;
 
 public class UserRemediesFragment extends Fragment {
 

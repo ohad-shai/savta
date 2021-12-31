@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Represents a util for shared elements.
  */
-public class SharedElementsUtil {
+public class SharedElementsUtils {
 
     /**
      * Builds a shared elements map and assign it into a new FragmentNavigator.Extras object.

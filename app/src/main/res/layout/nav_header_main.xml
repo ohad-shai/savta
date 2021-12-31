@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="bottom"
@@ -20,13 +21,18 @@
             android:id="@+id/nav_header_main_txtName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:gravity="right"
+            android:textAlignment="gravity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/nav_header_main_txtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd" />
+            android:gravity="right"
+            android:textAlignment="gravity"
+            tools:ignore="RtlHardcoded" />
     </LinearLayout>
 
     <View

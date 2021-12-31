@@ -29,7 +29,7 @@ import com.ohadshai.savta.databinding.FragmentFeedBinding;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.ui.adapters.RemediesListAdapter;
 import com.ohadshai.savta.ui.dialogs.AboutDialog;
-import com.ohadshai.savta.utils.SharedElementsUtil;
+import com.ohadshai.savta.utils.SharedElementsUtils;
 
 import java.util.List;
 
@@ -50,44 +50,44 @@ public class FeedFragment extends Fragment {
 
         _binding = FragmentFeedBinding.inflate(inflater, container, false);
 
-        RecyclerView rvRemediesList = _binding.rvRemediesList;
-        rvRemediesList.setHasFixedSize(true);
-        rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
-        RemediesListAdapter adapter = new RemediesListAdapter(_viewModel.getRemedies());
-        adapter.setOnItemClickListener(new RemediesListAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(Remedy remedy, View view) {
-                // Navigates to the details fragment of the remedy (with a transition of shared elements):
-                CardView cardContainer = view.findViewById(R.id.item_remedy_card);
-                ImageView imgRemedyPhoto = view.findViewById(R.id.item_remedy_imgPhoto);
-
-                Navigation.findNavController(view).navigate(
-                        FeedFragmentDirections.actionNavFeedToNavRemedyDetails(remedy),
-                        SharedElementsUtil.build(cardContainer, imgRemedyPhoto)
-                );
-            }
-        });
-        rvRemediesList.setAdapter(adapter);
-
-        SwipeRefreshLayout swipeRefreshLayout = _binding.swipeRefreshLayout;
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                reloadData();
-            }
-        });
-
-        // Listens to data changes (while the fragment is alive):
-        _viewModel.getRemedies().observe(getViewLifecycleOwner(), new Observer<List<Remedy>>() {
-            @Override
-            public void onChanged(List<Remedy> remedies) {
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        // Loads the data and shows UI indicators:
-        this.reloadData();
+//        RecyclerView rvRemediesList = _binding.rvRemediesList;
+//        rvRemediesList.setHasFixedSize(true);
+//        rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
+//        RemediesListAdapter adapter = new RemediesListAdapter(_viewModel.getRemedies());
+//        adapter.setOnItemClickListener(new RemediesListAdapter.OnItemClickListener() {
+//            @Override
+//            public void onClick(Remedy remedy, View view) {
+//                // Navigates to the details fragment of the remedy (with a transition of shared elements):
+//                CardView cardContainer = view.findViewById(R.id.item_remedy_card);
+//                ImageView imgRemedyPhoto = view.findViewById(R.id.item_remedy_imgPhoto);
+//
+//                Navigation.findNavController(view).navigate(
+//                        FeedFragmentDirections.actionNavFeedToNavRemedyDetails(remedy),
+//                        SharedElementsUtils.build(cardContainer, imgRemedyPhoto)
+//                );
+//            }
+//        });
+//        rvRemediesList.setAdapter(adapter);
+//
+//        SwipeRefreshLayout swipeRefreshLayout = _binding.swipeRefreshLayout;
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                swipeRefreshLayout.setRefreshing(true);
+//                reloadData();
+//            }
+//        });
+//
+//        // Listens to data changes (while the fragment is alive):
+//        _viewModel.getRemedies().observe(getViewLifecycleOwner(), new Observer<List<Remedy>>() {
+//            @Override
+//            public void onChanged(List<Remedy> remedies) {
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+//
+//        // Loads the data and shows UI indicators:
+//        this.reloadData();
 
         return _binding.getRoot();
     }
@@ -118,25 +118,25 @@ public class FeedFragment extends Fragment {
     private void reloadData() {
         //_binding.progressBar.setVisibility(View.VISIBLE);
 
-        RemediesModel.instance.getAll(new OnGetCompleteListener<List<Remedy>>() {
-            @Override
-            public void onSuccess(List<Remedy> remedies) {
-                // Updates the UI:
-                //_binding.progressBar.setVisibility(View.GONE);
-                if (remedies.size() < 1) {
-                    _binding.rvRemediesList.setVisibility(View.GONE);
-                    //_binding.btnMoviesNotFound.setVisibility(View.VISIBLE);
-                } else {
-                    //_binding.btnMoviesNotFound.setVisibility(View.GONE);
-                    _binding.rvRemediesList.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onFailure() {
-                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+//        RemediesModel.instance.getAll(new OnGetCompleteListener<List<Remedy>>() {
+//            @Override
+//            public void onSuccess(List<Remedy> remedies) {
+//                // Updates the UI:
+//                //_binding.progressBar.setVisibility(View.GONE);
+//                if (remedies.size() < 1) {
+//                    _binding.rvRemediesList.setVisibility(View.GONE);
+//                    //_binding.btnMoviesNotFound.setVisibility(View.VISIBLE);
+//                } else {
+//                    //_binding.btnMoviesNotFound.setVisibility(View.GONE);
+//                    _binding.rvRemediesList.setVisibility(View.VISIBLE);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     //endregion

@@ -22,8 +22,7 @@ import androidx.transition.TransitionInflater;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyDetailsBinding;
 import com.ohadshai.savta.entities.Remedy;
-import com.ohadshai.savta.ui.fragments.userRemedies.UserRemediesFragmentDirections;
-import com.ohadshai.savta.utils.SharedElementsUtil;
+import com.ohadshai.savta.utils.SharedElementsUtils;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -83,7 +82,7 @@ public class RemedyDetailsFragment extends Fragment {
 
             Navigation.findNavController(rootView).navigate(
                     RemedyDetailsFragmentDirections.actionNavRemedyDetailsToNavRemedyEdit(_remedy),
-                    SharedElementsUtil.build(imgRemedyPhoto)
+                    SharedElementsUtils.build(imgRemedyPhoto)
             );
             return true;
         } else if (id == R.id.action_delete) {

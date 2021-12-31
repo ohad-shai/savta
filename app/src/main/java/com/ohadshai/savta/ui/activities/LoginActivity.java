@@ -5,10 +5,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.ActivityLoginBinding;
 
@@ -20,6 +22,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.checkUserAuthenticationToExit();
 
         // Forces the application to display in RTL:
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
@@ -70,6 +74,17 @@ public class LoginActivity extends AppCompatActivity {
                 _binding.btnRegisterScreen.setTypeface(null, Typeface.NORMAL);
                 _binding.btnRegisterScreen.setTextColor(getResources().getColor(R.color.secondary));
             }
+        }
+    }
+
+    /**
+     * Checks if the user is already authenticated - then navigates to the MainActivity.
+     */
+    private void checkUserAuthenticationToExit() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        if (firebaseAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

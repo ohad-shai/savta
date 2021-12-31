@@ -1,10 +1,11 @@
 package com.ohadshai.savta.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.ActivityMainBinding;
 
@@ -37,7 +40,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(_binding.getRoot());
         setSupportActionBar(_binding.appBarMain.toolbar);
 
-        NavigationView navigationView = _binding.navView;
+        // Gets the current user's info:
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            throw new IllegalStateException("User cannot be null in MainActivity.");
+        }
+
+        NavigationView navView = _binding.navView;
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations:
         _AppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_feed)
                 .setOpenableLayout(_binding.drawerLayout)
@@ -45,8 +54,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         _navController = Navigation.findNavController(this, R.id.content_main_nav_host);
         _navController.addOnDestinationChangedListener(this);
         NavigationUI.setupActionBarWithNavController(this, _navController, _AppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, _navController);
-        navigationView.setNavigationItemSelectedListener(this);
+        NavigationUI.setupWithNavController(navView, _navController);
+        navView.setNavigationItemSelectedListener(this);
+
+        // Shows the current user's info in the navigation drawer header:
+        View navViewHeader = navView.getHeaderView(0);
+        TextView navViewHeaderTxtName = navViewHeader.findViewById(R.id.nav_header_main_txtName);
+        navViewHeaderTxtName.setText(user.getDisplayName());
+        TextView navViewHeaderTxtEmail = navViewHeader.findViewById(R.id.nav_header_main_txtEmail);
+        navViewHeaderTxtEmail.setText(user.getEmail());
 
         _binding.appBarMain.fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // In order to be able to listen on item selections, we need to override the Navigation Drawer item selection behavior:
         int id = item.getItemId();
         if (id == R.id.nav_logout) {
-            Snackbar.make(_binding.appBarMain.getRoot(), "התנתקות", Snackbar.LENGTH_LONG).show();
+            this.userLogout();
         }
         // This is for maintaining the behavior of the Navigation Drawer:
         NavigationUI.onNavDestinationSelected(item, _navController);
@@ -109,6 +125,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             _binding.appBarMain.fabAdd.hide();
             _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Logs out the current authenticated user.
+     */
+    private void userLogout() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signOut();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     //endregion

@@ -10,7 +10,7 @@ import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.utils.ApplicationContext;
-import com.ohadshai.savta.utils.SharedPreferencesUtil;
+import com.ohadshai.savta.utils.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -79,7 +79,7 @@ public class RemediesModel {
      */
     public LiveData<List<Remedy>> getAll() {
         if (_remediesList == null) {
-            _remediesList = _modelSql.getAll();
+            //_remediesList = _modelSql.getAll();
             this.getAll(null);
         }
         return _remediesList;
@@ -93,8 +93,8 @@ public class RemediesModel {
      */
     public void getAll(OnGetCompleteListener<List<Remedy>> listener) {
         // 1. Gets the local last update date indicator:
-        SharedPreferences sharedPreferences = ApplicationContext.context.getSharedPreferences(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, 0);
-        long lastUpdateDate = sharedPreferences.getLong(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, 0);
+        SharedPreferences sharedPreferences = ApplicationContext.getContext().getSharedPreferences(SharedPreferencesUtils.REMEDIES_LAST_UPDATE_DATE, 0);
+        long lastUpdateDate = sharedPreferences.getLong(SharedPreferencesUtils.REMEDIES_LAST_UPDATE_DATE, 0);
 
         // 2. Gets all the updated records after the last update date, from Firebase:
         _modelFirebase.getAll(lastUpdateDate, new OnGetCompleteListener<List<Remedy>>() {
@@ -111,7 +111,7 @@ public class RemediesModel {
 
                 // 4. Updates the local last update date indicator:
                 SharedPreferences.Editor spEditor = sharedPreferences.edit();
-                spEditor.putLong(SharedPreferencesUtil.REMEDIES_LAST_UPDATE_DATE, highestDate);
+                spEditor.putLong(SharedPreferencesUtils.REMEDIES_LAST_UPDATE_DATE, highestDate);
                 spEditor.apply();
 
                 // 5. Returns the data to the listeners:
