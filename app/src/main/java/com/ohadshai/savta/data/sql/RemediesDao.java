@@ -1,4 +1,4 @@
-package com.ohadshai.savta.data;
+package com.ohadshai.savta.data.sql;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

@@ -3,33 +3,19 @@ package com.ohadshai.savta.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
 import java.util.Date;
 
 /**
  * Represents a user in the application.
  */
-@Entity(tableName = "Users", indices = {@Index(value = {"_email"}, unique = true)})
 public class User implements Parcelable {
 
     //region Private Members
 
-    @PrimaryKey
-    @NonNull
-    private int _id;
-    @NonNull
+    private String _id;
     private String _firstName;
-    @NonNull
     private String _lastName;
-    @NonNull
     private String _email;
-    @NonNull
-    private String _password;
-    @NonNull
     private Date _dateRegistered;
 
     //endregion
@@ -43,11 +29,17 @@ public class User implements Parcelable {
         return (_firstName + " " + _lastName);
     }
 
-    public int getId() {
+    public void setFullName(String fullName) {
+        int fullNameDividerIndex = fullName.indexOf(' ');
+        this._firstName = fullName.substring(0, fullNameDividerIndex);
+        this._lastName = fullName.substring(fullNameDividerIndex + 1);
+    }
+
+    public String getId() {
         return _id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this._id = id;
     }
 
@@ -75,32 +67,21 @@ public class User implements Parcelable {
         this._email = email;
     }
 
-    @NonNull
-    public String getPassword() {
-        return _password;
-    }
-
-    public void setPassword(@NonNull String _password) {
-        this._password = _password;
-    }
-
-    @NonNull
     public Date getDateRegistered() {
         return _dateRegistered;
     }
 
-    public void setDateRegistered(@NonNull Date _dateRegistered) {
-        this._dateRegistered = _dateRegistered;
+    public void setDateRegistered(Date dateRegistered) {
+        this._dateRegistered = dateRegistered;
     }
 
     //region [Parcelable]
 
     private User(Parcel in) {
-        _id = in.readInt();
+        _id = in.readString();
         _firstName = in.readString();
         _lastName = in.readString();
         _email = in.readString();
-        _password = in.readString();
         _dateRegistered = new Date(in.readLong());
     }
 
@@ -118,11 +99,10 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
+        dest.writeString(_id);
         dest.writeString(_firstName);
         dest.writeString(_lastName);
         dest.writeString(_email);
-        dest.writeString(_password);
         dest.writeLong(_dateRegistered.getTime());
     }
 

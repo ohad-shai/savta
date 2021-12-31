@@ -3,7 +3,6 @@ package com.ohadshai.savta.ui.fragments.register;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +11,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.ohadshai.savta.R;
+import com.ohadshai.savta.data.UsersModel;
+import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
 import com.ohadshai.savta.databinding.FragmentRegisterBinding;
+import com.ohadshai.savta.entities.User;
 import com.ohadshai.savta.ui.activities.MainActivity;
 import com.ohadshai.savta.utils.AndroidUtils;
 import com.ohadshai.savta.utils.ValidationUtils;
@@ -31,12 +25,9 @@ import com.ohadshai.savta.utils.views.ProgressButton;
 
 public class RegisterFragment extends Fragment {
 
-    private RegisterViewModel _viewModel;
     private FragmentRegisterBinding _binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _viewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
-
         _binding = FragmentRegisterBinding.inflate(inflater, container, false);
         View rootView = _binding.getRoot();
 
@@ -155,47 +146,33 @@ public class RegisterFragment extends Fragment {
         AndroidUtils.hideKeyboard(requireActivity());
 
         String fullName = _binding.txtFullName.getText().toString().trim();
+        int fullNameDividerIndex = fullName.indexOf(' ');
+        String firstName = fullName.substring(0, fullNameDividerIndex);
+        String lastName = fullName.substring(fullNameDividerIndex + 1);
         String email = _binding.txtEmail.getText().toString().trim();
         String password = _binding.txtPassword.getText().toString().trim();
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Stores additional user's data to Firestore:
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(fullName)
-                                    .build();
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                // Navigates to the MainActivity:
-                                                FragmentActivity activity = requireActivity();
-                                                startActivity(new Intent(activity, MainActivity.class));
-                                                activity.finish();
-                                            } else {
-                                                Log.w("firebase:register", "user:updateProfile:failure", task.getException());
-                                                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-                                                _binding.progressBtnRegister.stopProgress();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                Snackbar.make(requireView(), R.string.register_email_is_taken, Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                Log.w("firebase:register", "createUserWithEmailAndPassword:failure", task.getException());
-                                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-                            }
-                            _binding.progressBtnRegister.stopProgress();
-                        }
-                    }
-                });
+        UsersModel.getInstance().register(firstName, lastName, email, password, new OnRegisterCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+                // Navigates to the MainActivity:
+                FragmentActivity activity = requireActivity();
+                startActivity(new Intent(activity, MainActivity.class));
+                activity.finish();
+            }
+
+            @Override
+            public void onCollision() {
+                Snackbar.make(requireView(), R.string.register_email_is_taken, Snackbar.LENGTH_SHORT).show();
+                _binding.progressBtnRegister.stopProgress();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                _binding.progressBtnRegister.stopProgress();
+            }
+        });
     }
 
     //endregion

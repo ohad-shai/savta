@@ -18,10 +18,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.ohadshai.savta.R;
+import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.databinding.ActivityMainBinding;
+import com.ohadshai.savta.entities.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NavController.OnDestinationChangedListener {
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(_binding.appBarMain.toolbar);
 
         // Gets the current user's info:
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        User user = UsersModel.getInstance().getCurrentUser();
         if (user == null) {
             throw new IllegalStateException("User cannot be null in MainActivity.");
         }
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Shows the current user's info in the navigation drawer header:
         View navViewHeader = navView.getHeaderView(0);
         TextView navViewHeaderTxtName = navViewHeader.findViewById(R.id.nav_header_main_txtName);
-        navViewHeaderTxtName.setText(user.getDisplayName());
+        navViewHeaderTxtName.setText(user.getFullName());
         TextView navViewHeaderTxtEmail = navViewHeader.findViewById(R.id.nav_header_main_txtEmail);
         navViewHeaderTxtEmail.setText(user.getEmail());
 
@@ -131,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Logs out the current authenticated user.
      */
     private void userLogout() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signOut();
+        UsersModel.getInstance().logoutCurrentUser();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

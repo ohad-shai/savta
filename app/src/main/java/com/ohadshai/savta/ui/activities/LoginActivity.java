@@ -10,9 +10,10 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.ohadshai.savta.R;
+import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.databinding.ActivityLoginBinding;
+import com.ohadshai.savta.entities.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -81,8 +82,8 @@ public class LoginActivity extends AppCompatActivity {
      * Checks if the user is already authenticated - then navigates to the MainActivity.
      */
     private void checkUserAuthenticationToExit() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        if (firebaseAuth.getCurrentUser() != null) {
+        User user = UsersModel.getInstance().getCurrentUser();
+        if (user != null) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
