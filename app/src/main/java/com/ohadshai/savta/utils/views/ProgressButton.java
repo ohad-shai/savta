@@ -1,6 +1,7 @@
 package com.ohadshai.savta.utils.views;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
@@ -181,9 +182,11 @@ public class ProgressButton extends CardView {
 
         _progress = findViewById(R.id.view_progress_button_progressBar);
         _progress.setVisibility(GONE);
+        _progress.getIndeterminateDrawable().setColorFilter(attributes.getColor(R.styleable.ProgressButton_textColor, getResources().getColor(R.color.text)), android.graphics.PorterDuff.Mode.SRC_IN);
 
         _txt = findViewById(R.id.view_progress_button_txt);
         _txt.setText(attributes.getString(R.styleable.ProgressButton_text));
+        _txt.setTextColor(attributes.getColor(R.styleable.ProgressButton_textColor, getResources().getColor(R.color.text)));
 
         ProgressButton thisBtn = this;
         super.setOnClickListener(new View.OnClickListener() {

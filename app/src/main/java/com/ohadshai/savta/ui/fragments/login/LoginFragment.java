@@ -52,7 +52,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(ProgressButton progressButton) {
                 boolean isValid = validateForm(true);
-                if (isValid) {
+                if (isValid && !progressButton.isInProgress()) {
                     login();
                 }
             }
@@ -123,7 +123,7 @@ public class LoginFragment extends Fragment {
     /**
      * Performs a login procedure.
      *
-     * @apiNote NOTE: Make sure the form is validated before calling this method.
+     * @apiNote NOTE: Make sure that the form is validated before calling this method.
      */
     private void login() {
         _binding.progressBtnLogin.startProgress();

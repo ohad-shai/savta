@@ -1,6 +1,7 @@
 package com.ohadshai.savta.data;
 
 import com.ohadshai.savta.data.firebase.UsersModelFirebase;
+import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
 import com.ohadshai.savta.entities.User;
@@ -62,25 +63,37 @@ public class UsersModel {
         return _modelFirebase.getCurrentUser();
     }
 
-//    /**
-//     * Updates the specified user and notifies the listener on complete.
-//     *
-//     * @param user     The user to update.
-//     * @param listener The listener to set.
-//     */
-//    public void update(User user, OnCompleteListener listener) {
-//        _modelFirebase.update(user, listener);
-//    }
-//
-//    /**
-//     * Deletes the specified user and notifies the listener on complete.
-//     *
-//     * @param user     The user to delete.
-//     * @param listener The listener to set.
-//     */
-//    public void delete(User user, OnCompleteListener listener) {
-//        _modelFirebase.delete(user, listener);
-//    }
+    /**
+     * Updates the full name of the current user and notifies the listener on complete.
+     *
+     * @param firstName The user's first name to update.
+     * @param lastName  The user's last name to update.
+     * @param listener  The listener to set.
+     */
+    public void updateFullName(String firstName, String lastName, OnCompleteListener listener) {
+        _modelFirebase.updateFullName(firstName, lastName, listener);
+    }
+
+    /**
+     * Updates the password of the current user and notifies the listener on complete.
+     *
+     * @param currentPassword The current password of the user.
+     * @param newPassword     The user's new password to update.
+     * @param listener        The listener to set.
+     */
+    public void updatePassword(String currentPassword, String newPassword, OnLoginCompleteListener listener) {
+        _modelFirebase.updatePassword(currentPassword, newPassword, listener);
+    }
+
+    /**
+     * Deletes the current user and notifies the listener on complete.
+     *
+     * @param password The password of the user to delete.
+     * @param listener The listener to set.
+     */
+    public void delete(String password, OnLoginCompleteListener listener) {
+        _modelFirebase.delete(password, listener);
+    }
 
     //endregion
 

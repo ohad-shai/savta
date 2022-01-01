@@ -1,10 +1,8 @@
 package com.ohadshai.savta.ui.dialogs;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.ohadshai.savta.R;
+import com.ohadshai.savta.utils.IntentUtils;
 
 /**
  * Represents a dialog for showing about the application.
  */
 public class AboutDialog extends DialogFragment {
+    private final String DIALOG_TAG = "dialog_about";
     private final AppCompatActivity _activity;
 
     private AboutDialog(@NonNull AppCompatActivity activity) {
@@ -42,8 +42,7 @@ public class AboutDialog extends DialogFragment {
         txtProjectGit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_project_git_link)));
-                startActivity(browserIntent);
+                IntentUtils.startWebBrowser(requireActivity(), getResources().getString(R.string.about_project_git_link));
             }
         });
 
@@ -51,8 +50,7 @@ public class AboutDialog extends DialogFragment {
         txtOhadLinkedIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_ohad_linkedin_link)));
-                startActivity(browserIntent);
+                IntentUtils.startWebBrowser(requireActivity(), getResources().getString(R.string.about_ohad_linkedin_link));
             }
         });
 
@@ -60,8 +58,7 @@ public class AboutDialog extends DialogFragment {
         txtOhadGitHub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.about_ohad_github_link)));
-                startActivity(browserIntent);
+                IntentUtils.startWebBrowser(requireActivity(), getResources().getString(R.string.about_ohad_github_link));
             }
         });
 
@@ -73,7 +70,7 @@ public class AboutDialog extends DialogFragment {
     //region Public Static API
 
     /**
-     * Makes a new instance of the "About" dialog.
+     * Makes a new instance of the dialog.
      *
      * @param activity The caller activity.
      * @return Returns the instance of the dialog.
@@ -87,10 +84,10 @@ public class AboutDialog extends DialogFragment {
     //region Public API
 
     /**
-     * Shows the "About" dialog.
+     * Shows the dialog.
      */
     public void show() {
-        this.show(_activity.getSupportFragmentManager(), "dialog_about");
+        super.show(_activity.getSupportFragmentManager(), DIALOG_TAG);
     }
 
     //endregion

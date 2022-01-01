@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    tools:context=".ui.dialogs.DeleteAccountDialog">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/delete_account_important_message"
+            android:textColor="@color/danger"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/delete_account_enter_password"
+            android:textSize="16sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:cardUseCompatPadding="true">
+
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="true"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:padding="16dp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/text"
+                android:textColorHint="@color/secondary"
+                android:textDirection="rtl" />
+        </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:focusable="false"
+                android:text="@string/cancel"
+                android:textSize="16sp" />
+
+            <com.ohadshai.savta.utils.views.ProgressButton
+                android:id="@+id/progressBtnDelete"
+                android:layout_width="164sp"
+                android:layout_height="54dp"
+                android:layout_gravity="end"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:backgroundCustom="@color/danger"
+                app:cardElevation="4dp"
+                app:text="@string/delete"
+                app:textColor="@color/white" />
+        </FrameLayout>
+
+    </LinearLayout>
+</ScrollView>

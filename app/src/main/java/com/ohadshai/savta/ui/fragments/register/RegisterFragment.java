@@ -58,7 +58,7 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(ProgressButton progressButton) {
                 boolean isValid = validateForm(true);
-                if (isValid) {
+                if (isValid && !progressButton.isInProgress()) {
                     register();
                 }
             }

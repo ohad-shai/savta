@@ -4,6 +4,8 @@
     <!--  General  -->
     <string name="about">אודות</string>
     <string name="close">סגירה</string>
+    <string name="cancel">ביטול</string>
+    <string name="save">שמירה</string>
     <string name="login">התחברות</string>
     <string name="login_auth_invalid">דוא\"ל או סיסמה לא נכונים</string>
     <string name="register">הרשמה</string>
@@ -17,6 +19,8 @@
     <string name="email">דוא\"ל</string>
     <string name="email_required">יש למלא דוא\"ל</string>
     <string name="email_invalid_format">יש למלא כתובת דוא\"ל תקינה</string>
+    <string name="change_full_name">שינוי שם מלא</string>
+    <string name="change_email_not_supported">כתובת דוא\"ל אינה ניתנת לשינוי, יש ליצור קשר</string>
     <string name="change_password">שינוי סיסמה</string>
     <string name="delete_account">מחיקת חשבון</string>
     <string name="against">נגד</string>
@@ -31,6 +35,21 @@
     <string name="edit">עריכה</string>
     <string name="delete">מחיקה</string>
     <string name="failure_message">אירעה שגיאה, אנא נסו שנית מאוחר יותר.</string>
+    <string name="first_name">שם פרטי</string>
+    <string name="first_name_required">יש למלא שם פרטי</string>
+    <string name="last_name">שם משפחה</string>
+    <string name="last_name_required">יש למלא שם משפחה</string>
+    <string name="current_password">סיסמה נוכחית</string>
+    <string name="current_password_incorrect">סיסמה נוכחית לא נכונה</string>
+    <string name="new_password">סיסמה חדשה</string>
+    <string name="new_password_must_be_different">סיסמה חדשה צריכה להיות שונה מהנוכחית</string>
+    <string name="new_password_confirm">סיסמה חדשה שוב</string>
+    <string name="new_password_confirm_do_not_match">הסיסמה לא תואמת לסיסמה החדשה</string>
+    <string name="password_changed_successfully">הסיסמה שונתה בהצלחה</string>
+    <string name="password_incorrect">סיסמה לא נכונה</string>
+    <string name="delete_account_important_message"><u>חשוב מאוד:</u> פעולה זאת תמחק את החשבון לצמיתות ואת כל המידע ששותף ממנו ולא יהיה ניתן לשחזר מידע זה בעתיד!</string>
+    <string name="delete_account_enter_password">יש להזין סיסמה על מנת למחוק את החשבון:</string>
+    <string name="account_deleted_successfully">החשבון נמחק בהצלחה</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
@@ -66,4 +85,10 @@
     <string name="about_ohad_linkedin_link"><u>https://www.linkedin.com/in/ohad-shai</u></string>
     <string name="about_ohad_github"><u>קישור ל-GitHub שלי</u></string>
     <string name="about_ohad_github_link"><u>https://github.com/ohad-shai</u></string>
+
+    <!--  Preferences Keys  -->
+    <string name="pref_key_full_name">prefFullName</string>
+    <string name="pref_key_email">prefEmail</string>
+    <string name="pref_key_change_password">prefChangePassword</string>
+    <string name="pref_key_delete_account">prefDeleteAccount</string>
 </resources>
