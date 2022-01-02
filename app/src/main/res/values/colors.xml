@@ -13,5 +13,6 @@
     <color name="green_gradient_end">#BFE7AF</color>
     <color name="background">#FFF7F7F7</color>
     <color name="danger">#E63E3E</color>
+    <color name="warning">#EFB231</color>
     <color name="hyperlink">#4343CC</color>
 </resources>
