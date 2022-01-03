@@ -23,6 +23,10 @@ public class User implements Parcelable {
     public User() {
     }
 
+    public User(String id) {
+        this._id = id;
+    }
+
     //region Public API
 
     public String getFullName() {

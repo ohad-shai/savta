@@ -1,13 +1,17 @@
 package com.ohadshai.savta.data.firebase;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
@@ -33,22 +37,29 @@ public class RemediesModelFirebase {
     public static final String FIELD_PROBLEM_DESC = "problem_desc";
     public static final String FIELD_TREATMENT_DESC = "treatment_desc";
     public static final String FIELD_IMAGE_URL = "image_url";
-    public static final String FIELD_USER_POSTED = "user_posted";
+    public static final String FIELD_POSTED_BY_USER_ID = "posted_by_user_id";
+    public static final String FIELD_POSTED_BY_USER_NAME = "posted_by_user_name";
     public static final String FIELD_DATE_POSTED = "date_posted";
     public static final String FIELD_DATE_LAST_UPDATED = "date_last_updated";
 
     //endregion
 
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    public RemediesModelFirebase() {
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build();
+        db.setFirestoreSettings(settings);
+    }
+
     //region Public API
 
     public void create(Remedy remedy, OnCompleteListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        DocumentReference docRef = db.collection(COLLECTION_NAME).document();
+        remedy.setId(docRef.getId());
         Map<String, Object> data = this.mapRemedyToDocument(remedy, true);
-
-        db.collection(COLLECTION_NAME)
-                .document(String.valueOf(remedy.getId()))
-                .set(data)
+        docRef.set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -58,14 +69,13 @@ public class RemediesModelFirebase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "create", e);
                         listener.onFailure();
                     }
                 });
     }
 
     public void get(int id, OnGetCompleteListener<Remedy> listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection(COLLECTION_NAME)
                 .document(String.valueOf(id))
                 .get()
@@ -73,7 +83,7 @@ public class RemediesModelFirebase {
                     @Override
                     public void onSuccess(DocumentSnapshot document) {
                         if (document.exists()) {
-                            Remedy remedy = document.toObject(Remedy.class);
+                            Remedy remedy = parseRemedyFromDocument(document);
                             listener.onSuccess(remedy);
                         } else {
                             listener.onFailure();
@@ -83,25 +93,22 @@ public class RemediesModelFirebase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "get", e);
                         listener.onFailure();
                     }
                 });
     }
 
     public void getAll(long lastUpdateDate, OnGetCompleteListener<List<Remedy>> listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Timestamp ts = new Timestamp(new Date((lastUpdateDate)));
-
         db.collection(COLLECTION_NAME)
-                .whereGreaterThanOrEqualTo(FIELD_DATE_LAST_UPDATED, ts)
+                .whereGreaterThanOrEqualTo(FIELD_DATE_LAST_UPDATED, new Timestamp(new Date(lastUpdateDate)))
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documents) {
                         List<Remedy> remedies = new ArrayList<>();
                         for (QueryDocumentSnapshot document : documents) {
-                            Remedy remedy = document.toObject(Remedy.class);
+                            Remedy remedy = parseRemedyFromDocument(document);
                             remedies.add(remedy);
                         }
                         listener.onSuccess(remedies);
@@ -110,14 +117,13 @@ public class RemediesModelFirebase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "getAll", e);
                         listener.onFailure();
                     }
                 });
     }
 
     public void update(Remedy remedy, OnCompleteListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         Map<String, Object> data = this.mapRemedyToDocument(remedy, false);
 
         db.collection(COLLECTION_NAME)
@@ -132,14 +138,13 @@ public class RemediesModelFirebase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "update", e);
                         listener.onFailure();
                     }
                 });
     }
 
     public void delete(Remedy remedy, OnCompleteListener listener) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection(COLLECTION_NAME)
                 .document(String.valueOf(remedy.getId()))
                 .delete()
@@ -152,6 +157,7 @@ public class RemediesModelFirebase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "delete", e);
                         listener.onFailure();
                     }
                 });
@@ -168,7 +174,8 @@ public class RemediesModelFirebase {
         map.put(FIELD_PROBLEM_DESC, remedy.getProblemDescription());
         map.put(FIELD_TREATMENT_DESC, remedy.getTreatmentDescription());
         map.put(FIELD_IMAGE_URL, remedy.getImageUrl());
-        map.put(FIELD_USER_POSTED, remedy.getUserPosted());
+        map.put(FIELD_POSTED_BY_USER_ID, remedy.getPostedByUserId());
+        map.put(FIELD_POSTED_BY_USER_NAME, remedy.getPostedByUserName());
         if (isCreate) {
             map.put(FIELD_DATE_POSTED, FieldValue.serverTimestamp());
         } else {
@@ -180,12 +187,13 @@ public class RemediesModelFirebase {
 
     private Remedy parseRemedyFromDocument(DocumentSnapshot document) {
         Remedy remedy = new Remedy();
-        remedy.setId(document.getLong(FIELD_ID).intValue());
+        remedy.setId(document.getString(FIELD_ID));
         remedy.setName(document.getString(FIELD_NAME));
         remedy.setProblemDescription(document.getString(FIELD_PROBLEM_DESC));
         remedy.setTreatmentDescription(document.getString(FIELD_TREATMENT_DESC));
         remedy.setImageUrl(document.getString(FIELD_IMAGE_URL));
-        //remedy.setUserPosted(document.get(FIELD_USER_POSTED)); // TODO
+        remedy.setPostedByUserId(document.getString(FIELD_POSTED_BY_USER_ID));
+        remedy.setPostedByUserName(document.getString(FIELD_POSTED_BY_USER_NAME));
         remedy.setDatePosted(document.getDate(FIELD_DATE_POSTED));
         remedy.setDateLastUpdated(document.getDate(FIELD_DATE_LAST_UPDATED));
         return remedy;

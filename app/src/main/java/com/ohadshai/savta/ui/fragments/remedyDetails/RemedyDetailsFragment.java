@@ -113,7 +113,7 @@ public class RemedyDetailsFragment extends Fragment {
         _binding.txtProblemDescription.setText(remedy.getProblemDescription());
         _binding.txtName.setText(remedy.getName());
         _binding.txtTreatmentDescription.setText(remedy.getTreatmentDescription());
-        _binding.txtPostedBy.setText(remedy.getUserPosted().getFullName());
+        _binding.txtPostedBy.setText(remedy.getPostedByUserName());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String dateString = dateFormat.format(remedy.getDatePosted());
         _binding.txtPostedOnDate.setText(dateString);

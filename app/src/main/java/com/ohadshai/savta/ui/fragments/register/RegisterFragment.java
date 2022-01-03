@@ -20,6 +20,7 @@ import com.ohadshai.savta.databinding.FragmentRegisterBinding;
 import com.ohadshai.savta.entities.User;
 import com.ohadshai.savta.ui.activities.MainActivity;
 import com.ohadshai.savta.utils.AndroidUtils;
+import com.ohadshai.savta.utils.NetworkUtils;
 import com.ohadshai.savta.utils.ValidationUtils;
 import com.ohadshai.savta.utils.views.ProgressButton;
 
@@ -142,6 +143,9 @@ public class RegisterFragment extends Fragment {
      * @apiNote NOTE: Make sure the form is validated before calling this method.
      */
     private void register() {
+        if (NetworkUtils.checkIfNoNetworkToShowSnackBar(requireActivity(), requireView())) {
+            return;
+        }
         _binding.progressBtnRegister.startProgress();
         AndroidUtils.hideKeyboard(requireActivity());
 

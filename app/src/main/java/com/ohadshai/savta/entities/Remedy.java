@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.ohadshai.savta.data.utils.DateConverter;
 
 import java.util.Date;
 
@@ -19,7 +22,7 @@ public class Remedy implements Parcelable {
 
     @PrimaryKey
     @NonNull
-    private int _id;
+    private String _id;
     @NonNull
     private String _name;
     @NonNull
@@ -28,10 +31,14 @@ public class Remedy implements Parcelable {
     private String _treatmentDescription;
     private String _imageUrl;
     @NonNull
-    private User _userPosted;
+    private String _postedByUserId;
     @NonNull
+    private String _postedByUserName;
+    @NonNull
+    @TypeConverters(DateConverter.class)
     private Date _datePosted;
     @NonNull
+    @TypeConverters(DateConverter.class)
     private Date _dateLastUpdated;
 
     //endregion
@@ -41,11 +48,11 @@ public class Remedy implements Parcelable {
 
     //region Public API
 
-    public int getId() {
+    public String getId() {
         return _id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this._id = id;
     }
 
@@ -81,12 +88,20 @@ public class Remedy implements Parcelable {
         this._imageUrl = imageUrl;
     }
 
-    public User getUserPosted() {
-        return _userPosted;
+    public String getPostedByUserId() {
+        return _postedByUserId;
     }
 
-    public void setUserPosted(User userPosted) {
-        this._userPosted = userPosted;
+    public void setPostedByUserId(String postedByUserId) {
+        this._postedByUserId = postedByUserId;
+    }
+
+    public String getPostedByUserName() {
+        return _postedByUserName;
+    }
+
+    public void setPostedByUserName(String postedByUserName) {
+        this._postedByUserName = postedByUserName;
     }
 
     public Date getDatePosted() {
@@ -108,12 +123,13 @@ public class Remedy implements Parcelable {
     //region [Parcelable]
 
     private Remedy(Parcel in) {
-        _id = in.readInt();
+        _id = in.readString();
         _name = in.readString();
         _problemDescription = in.readString();
         _treatmentDescription = in.readString();
         _imageUrl = in.readString();
-        _userPosted = in.readParcelable(User.class.getClassLoader());
+        _postedByUserId = in.readString();
+        _postedByUserName = in.readString();
         _datePosted = new Date(in.readLong());
         _dateLastUpdated = new Date(in.readLong());
     }
@@ -132,12 +148,13 @@ public class Remedy implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
+        dest.writeString(_id);
         dest.writeString(_name);
         dest.writeString(_problemDescription);
         dest.writeString(_treatmentDescription);
         dest.writeString(_imageUrl);
-        dest.writeParcelable(_userPosted, flags);
+        dest.writeString(_postedByUserId);
+        dest.writeString(_postedByUserName);
         dest.writeLong(_datePosted.getTime());
         dest.writeLong(_dateLastUpdated.getTime());
     }

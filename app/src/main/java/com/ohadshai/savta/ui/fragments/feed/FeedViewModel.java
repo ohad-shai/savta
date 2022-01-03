@@ -13,7 +13,7 @@ public class FeedViewModel extends ViewModel {
     private final LiveData<List<Remedy>> _remedies;
 
     public FeedViewModel() {
-        _remedies = RemediesModel.instance.getAll();
+        _remedies = RemediesModel.getInstance().getAll();
     }
 
     public LiveData<List<Remedy>> getRemedies() {

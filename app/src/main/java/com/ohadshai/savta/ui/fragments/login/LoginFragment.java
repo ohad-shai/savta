@@ -21,6 +21,7 @@ import com.ohadshai.savta.databinding.FragmentLoginBinding;
 import com.ohadshai.savta.entities.User;
 import com.ohadshai.savta.ui.activities.MainActivity;
 import com.ohadshai.savta.utils.AndroidUtils;
+import com.ohadshai.savta.utils.NetworkUtils;
 import com.ohadshai.savta.utils.ValidationUtils;
 import com.ohadshai.savta.utils.views.ProgressButton;
 
@@ -126,6 +127,9 @@ public class LoginFragment extends Fragment {
      * @apiNote NOTE: Make sure that the form is validated before calling this method.
      */
     private void login() {
+        if (NetworkUtils.checkIfNoNetworkToShowSnackBar(requireActivity(), requireView())) {
+            return;
+        }
         _binding.progressBtnLogin.startProgress();
         AndroidUtils.hideKeyboard(requireActivity());
 

@@ -1,37 +1,39 @@
 package com.ohadshai.savta.data.sql;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
+import androidx.core.os.HandlerCompat;
 import androidx.lifecycle.LiveData;
 
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Represents the data access to the local SQL database, related to Remedies.
  */
 public class RemediesModelSql {
+    private final Executor executor = Executors.newFixedThreadPool(1);
+    private final Handler mainThread = HandlerCompat.createAsync(Looper.getMainLooper());
 
-    public void create(Remedy remedy, OnCompleteListener listener) {
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                AppLocalDb.db.remediesDao().create(remedy);
-                return null;
-            }
+    //region Public API
 
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                listener.onSuccess();
-            }
-        };
-        task.execute();
+    public void insert(Remedy remedy, OnCompleteListener listener) {
+        executor.execute(() -> {
+            AppLocalDb.db.remediesDao().insert(remedy);
+            mainThread.post(() -> {
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            });
+        });
     }
 
-    public LiveData<Remedy> get(int id) {
+    public LiveData<Remedy> get(String id) {
         return AppLocalDb.db.remediesDao().get(id);
     }
 
@@ -40,37 +42,27 @@ public class RemediesModelSql {
     }
 
     public void update(Remedy remedy, OnCompleteListener listener) {
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                AppLocalDb.db.remediesDao().create(remedy);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                listener.onSuccess();
-            }
-        };
-        task.execute();
+        executor.execute(() -> {
+            AppLocalDb.db.remediesDao().insert(remedy);
+            mainThread.post(() -> {
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            });
+        });
     }
 
     public void delete(Remedy remedy, OnCompleteListener listener) {
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                AppLocalDb.db.remediesDao().delete(remedy);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                listener.onSuccess();
-            }
-        };
-        task.execute();
+        executor.execute(() -> {
+            AppLocalDb.db.remediesDao().delete(remedy);
+            mainThread.post(() -> {
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            });
+        });
     }
+
+    //endregion
 
 }

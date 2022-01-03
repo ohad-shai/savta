@@ -35,6 +35,8 @@
     <string name="edit">עריכה</string>
     <string name="delete">מחיקה</string>
     <string name="failure_message">אירעה שגיאה, אנא נסו שנית מאוחר יותר.</string>
+    <string name="no_network_message">אין גישה לאינטרנט</string>
+    <string name="settings">הגדרות</string>
     <string name="first_name">שם פרטי</string>
     <string name="first_name_required">יש למלא שם פרטי</string>
     <string name="last_name">שם משפחה</string>
@@ -50,6 +52,8 @@
     <string name="delete_account_important_message"><u>חשוב מאוד:</u> פעולה זאת תמחק את החשבון לצמיתות ואת כל המידע ששותף ממנו ולא יהיה ניתן לשחזר מידע זה בעתיד!</string>
     <string name="delete_account_enter_password">יש להזין סיסמה על מנת למחוק את החשבון:</string>
     <string name="account_deleted_successfully">החשבון נמחק בהצלחה</string>
+    <string name="remedies_not_found">נראה שלא פרסמו תרופות סבתא עדיין</string>
+    <string name="my_remedies_not_found">נראה שלא פירסמת כלום עדיין</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>

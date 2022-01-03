@@ -1,0 +1,82 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "5bb7115e6a9ea9ae4610802f91151629",
+    "entities": [
+      {
+        "tableName": "Remedies",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `_name` TEXT NOT NULL, `_problemDescription` TEXT NOT NULL, `_treatmentDescription` TEXT NOT NULL, `_imageUrl` TEXT, `_postedByUserId` TEXT NOT NULL, `_postedByUserName` TEXT NOT NULL, `_datePosted` INTEGER NOT NULL, `_dateLastUpdated` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "_id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_name",
+            "columnName": "_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_problemDescription",
+            "columnName": "_problemDescription",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_treatmentDescription",
+            "columnName": "_treatmentDescription",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_imageUrl",
+            "columnName": "_imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "_postedByUserId",
+            "columnName": "_postedByUserId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_postedByUserName",
+            "columnName": "_postedByUserName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_datePosted",
+            "columnName": "_datePosted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "_dateLastUpdated",
+            "columnName": "_dateLastUpdated",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5bb7115e6a9ea9ae4610802f91151629')"
+    ]
+  }
+}

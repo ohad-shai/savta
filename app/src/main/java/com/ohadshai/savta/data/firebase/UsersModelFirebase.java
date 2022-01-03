@@ -5,8 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -21,6 +19,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
@@ -45,6 +44,15 @@ public class UsersModelFirebase {
 
     //endregion
 
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    public UsersModelFirebase() {
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .build();
+        db.setFirestoreSettings(settings);
+    }
+
     //region Public API
 
     public void register(String firstName, String lastName, String email, String password, OnRegisterCompleteListener listener) {
@@ -66,22 +74,19 @@ public class UsersModelFirebase {
                                             if (task.isSuccessful()) {
                                                 User user = convertFirebaseUserToApplicationUser(firebaseUser);
                                                 // Stores the user data to the Firebase Firestore database:
-                                                FirebaseFirestore db = FirebaseFirestore.getInstance();
                                                 Map<String, Object> userToEnter = mapUserToDocument(user, true);
                                                 db.collection(COLLECTION_NAME)
                                                         .document(user.getId())
                                                         .set(userToEnter)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
-                                                            public void onSuccess(Void unused) {
-                                                                listener.onSuccess(user);
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Log.w("firebase:register", "storeInUsersCollection:failure", e);
-                                                                listener.onFailure(e);
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    listener.onSuccess(user);
+                                                                } else {
+                                                                    Log.w("firebase:register", "storeInUsersCollection:failure", task.getException());
+                                                                    listener.onFailure(task.getException());
+                                                                }
                                                             }
                                                         });
                                             } else {
@@ -152,7 +157,6 @@ public class UsersModelFirebase {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             // Updates the user data in the Firebase Firestore database:
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
                             Map<String, Object> updateValues = new HashMap<>();
                             updateValues.put(FIELD_FIRST_NAME, firstName);
                             updateValues.put(FIELD_LAST_NAME, lastName);
@@ -230,10 +234,9 @@ public class UsersModelFirebase {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
                             // (1) Deletes the remedies created by the user from the Firebase Firestore database:
                             CollectionReference remediesCollection = db.collection(RemediesModelFirebase.COLLECTION_NAME);
-                            remediesCollection.whereEqualTo(RemediesModelFirebase.FIELD_USER_POSTED, firebaseUser.getUid())
+                            remediesCollection.whereEqualTo(RemediesModelFirebase.FIELD_POSTED_BY_USER_ID, firebaseUser.getUid())
                                     .get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override

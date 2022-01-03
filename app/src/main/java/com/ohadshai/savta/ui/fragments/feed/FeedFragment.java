@@ -1,5 +1,6 @@
 package com.ohadshai.savta.ui.fragments.feed;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -24,11 +24,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.RemediesModel;
-import com.ohadshai.savta.data.utils.OnGetCompleteListener;
+import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.databinding.FragmentFeedBinding;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.ui.adapters.RemediesListAdapter;
 import com.ohadshai.savta.ui.dialogs.AboutDialog;
+import com.ohadshai.savta.utils.NetworkUtils;
 import com.ohadshai.savta.utils.SharedElementsUtils;
 
 import java.util.List;
@@ -39,55 +40,57 @@ public class FeedFragment extends Fragment {
     private FragmentFeedBinding _binding;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        setHasOptionsMenu(true);
+        _viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _viewModel = new ViewModelProvider(this).get(FeedViewModel.class);
+        setHasOptionsMenu(true);
 
         _binding = FragmentFeedBinding.inflate(inflater, container, false);
 
-//        RecyclerView rvRemediesList = _binding.rvRemediesList;
-//        rvRemediesList.setHasFixedSize(true);
-//        rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
-//        RemediesListAdapter adapter = new RemediesListAdapter(_viewModel.getRemedies());
-//        adapter.setOnItemClickListener(new RemediesListAdapter.OnItemClickListener() {
-//            @Override
-//            public void onClick(Remedy remedy, View view) {
-//                // Navigates to the details fragment of the remedy (with a transition of shared elements):
-//                CardView cardContainer = view.findViewById(R.id.item_remedy_card);
-//                ImageView imgRemedyPhoto = view.findViewById(R.id.item_remedy_imgPhoto);
-//
-//                Navigation.findNavController(view).navigate(
-//                        FeedFragmentDirections.actionNavFeedToNavRemedyDetails(remedy),
-//                        SharedElementsUtils.build(cardContainer, imgRemedyPhoto)
-//                );
-//            }
-//        });
-//        rvRemediesList.setAdapter(adapter);
-//
-//        SwipeRefreshLayout swipeRefreshLayout = _binding.swipeRefreshLayout;
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                swipeRefreshLayout.setRefreshing(true);
-//                reloadData();
-//            }
-//        });
-//
-//        // Listens to data changes (while the fragment is alive):
-//        _viewModel.getRemedies().observe(getViewLifecycleOwner(), new Observer<List<Remedy>>() {
-//            @Override
-//            public void onChanged(List<Remedy> remedies) {
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-//
-//        // Loads the data and shows UI indicators:
-//        this.reloadData();
+        RecyclerView rvRemediesList = _binding.rvRemediesList;
+        rvRemediesList.setHasFixedSize(true);
+        rvRemediesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        RemediesListAdapter adapter = new RemediesListAdapter(_viewModel.getRemedies());
+        adapter.setOnItemClickListener(new RemediesListAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(Remedy remedy, View view) {
+                // Navigates to the details fragment of the remedy (with a transition of shared elements):
+                CardView cardContainer = view.findViewById(R.id.item_remedy_card);
+                ImageView imgRemedyPhoto = view.findViewById(R.id.item_remedy_imgPhoto);
+
+                Navigation.findNavController(view).navigate(
+                        FeedFragmentDirections.actionNavFeedToNavRemedyDetails(remedy),
+                        SharedElementsUtils.build(cardContainer, imgRemedyPhoto)
+                );
+            }
+        });
+        rvRemediesList.setAdapter(adapter);
+
+        _binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshRemediesList();
+            }
+        });
+
+        // Listens to data changes (while the fragment is alive):
+        _viewModel.getRemedies().observe(getViewLifecycleOwner(), new Observer<List<Remedy>>() {
+            @Override
+            public void onChanged(List<Remedy> remedies) {
+                adapter.notifyDataSetChanged();
+                if (remedies.size() < 1) {
+                    _binding.rvRemediesList.setVisibility(View.GONE);
+                    _binding.llRemediesNotFound.setVisibility(View.VISIBLE);
+                } else {
+                    _binding.llRemediesNotFound.setVisibility(View.GONE);
+                    _binding.rvRemediesList.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         return _binding.getRoot();
     }
@@ -108,6 +111,14 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        // Loads the data from the cloud:
+        this.refreshRemediesList();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         _binding = null;
@@ -115,28 +126,26 @@ public class FeedFragment extends Fragment {
 
     //region Private Methods
 
-    private void reloadData() {
-        //_binding.progressBar.setVisibility(View.VISIBLE);
+    /**
+     * Refreshes the list of remedies from the cloud.
+     */
+    private void refreshRemediesList() {
+        if (NetworkUtils.checkIfNoNetworkToShowSnackBar(requireActivity(), requireView())) {
+            _binding.swipeRefreshLayout.setRefreshing(false);
+        } else {
+            _binding.swipeRefreshLayout.setRefreshing(true);
+            RemediesModel.getInstance().refreshGetAll(new OnCompleteListener() {
+                @Override
+                public void onSuccess() {
+                    _binding.swipeRefreshLayout.setRefreshing(false);
+                }
 
-//        RemediesModel.instance.getAll(new OnGetCompleteListener<List<Remedy>>() {
-//            @Override
-//            public void onSuccess(List<Remedy> remedies) {
-//                // Updates the UI:
-//                //_binding.progressBar.setVisibility(View.GONE);
-//                if (remedies.size() < 1) {
-//                    _binding.rvRemediesList.setVisibility(View.GONE);
-//                    //_binding.btnMoviesNotFound.setVisibility(View.VISIBLE);
-//                } else {
-//                    //_binding.btnMoviesNotFound.setVisibility(View.GONE);
-//                    _binding.rvRemediesList.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//                Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-//            }
-//        });
+                @Override
+                public void onFailure() {
+                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     //endregion
