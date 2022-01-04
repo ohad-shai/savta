@@ -12,6 +12,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
@@ -101,7 +102,34 @@ public class RemediesModelFirebase {
 
     public void getAll(long lastUpdateDate, OnGetCompleteListener<List<Remedy>> listener) {
         db.collection(COLLECTION_NAME)
-                .whereGreaterThanOrEqualTo(FIELD_DATE_LAST_UPDATED, new Timestamp(new Date(lastUpdateDate)))
+                .whereGreaterThan(FIELD_DATE_LAST_UPDATED, new Timestamp(new Date(lastUpdateDate)))
+                .orderBy(FIELD_DATE_LAST_UPDATED, Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documents) {
+                        List<Remedy> remedies = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : documents) {
+                            Remedy remedy = parseRemedyFromDocument(document);
+                            remedies.add(remedy);
+                        }
+                        listener.onSuccess(remedies);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("RemediesModelFirebase", "getAll", e);
+                        listener.onFailure();
+                    }
+                });
+    }
+
+    public void getAllByUser(String userId, long lastUpdateDate, OnGetCompleteListener<List<Remedy>> listener) {
+        db.collection(COLLECTION_NAME)
+                .whereEqualTo(FIELD_POSTED_BY_USER_ID, userId)
+                .whereGreaterThan(FIELD_DATE_LAST_UPDATED, new Timestamp(new Date(lastUpdateDate)))
+                .orderBy(FIELD_DATE_LAST_UPDATED, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

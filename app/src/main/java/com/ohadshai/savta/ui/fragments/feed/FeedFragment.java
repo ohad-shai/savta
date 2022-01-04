@@ -142,6 +142,7 @@ public class FeedFragment extends Fragment {
 
                 @Override
                 public void onFailure() {
+                    _binding.swipeRefreshLayout.setRefreshing(false);
                     Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
                 }
             });

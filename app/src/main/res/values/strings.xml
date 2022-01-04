@@ -63,8 +63,11 @@
 
     <!--  Remedy Entity  -->
     <string name="remedy_problem_desc">הבעיה הרפואית</string>
+    <string name="remedy_problem_desc_required">יש למלא בעיה רפואית</string>
     <string name="remedy_name">שם התרופה</string>
+    <string name="remedy_name_required">יש למלא שם תרופה</string>
     <string name="remedy_treatment_desc">אופן הטיפול</string>
+    <string name="remedy_treatment_desc_required">יש למלא אופן טיפול</string>
 
     <!--  Remedy Create Fragment  -->
     <string name="remedy_create_title">תרופה חדשה</string>

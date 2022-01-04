@@ -6,7 +6,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import com.ohadshai.savta.entities.Remedy;
 
@@ -24,8 +23,11 @@ public interface RemediesDao {
     @Query("SELECT * FROM Remedies WHERE _id = :id")
     LiveData<Remedy> get(String id);
 
-    @Query("SELECT * FROM Remedies")
+    @Query("SELECT * FROM Remedies ORDER BY _dateLastUpdated DESC")
     LiveData<List<Remedy>> getAll();
+
+    @Query("SELECT * FROM Remedies WHERE _postedByUserId = :userId ORDER BY _dateLastUpdated DESC")
+    LiveData<List<Remedy>> getAllByUser(String userId);
 
     @Delete
     void delete(Remedy remedy);

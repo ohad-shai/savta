@@ -41,6 +41,10 @@ public class RemediesModelSql {
         return AppLocalDb.db.remediesDao().getAll();
     }
 
+    public LiveData<List<Remedy>> getAllByUser(String userId) {
+        return AppLocalDb.db.remediesDao().getAllByUser(userId);
+    }
+
     public void update(Remedy remedy, OnCompleteListener listener) {
         executor.execute(() -> {
             AppLocalDb.db.remediesDao().insert(remedy);

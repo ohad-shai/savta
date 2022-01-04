@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Logs out the current authenticated user.
      */
     private void userLogout() {
-        UsersModel.getInstance().logoutCurrentUser();
+        UsersModel.getInstance().logoutCurrentUser(null);
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

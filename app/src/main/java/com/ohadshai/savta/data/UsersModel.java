@@ -24,6 +24,13 @@ public class UsersModel {
     //region Public API
 
     /**
+     * Clears all the live data members.
+     */
+    public void clearAllLiveData() {
+
+    }
+
+    /**
      * Registers a new user and notifies the listener on complete.
      *
      * @param firstName The first name of the user to set.
@@ -48,10 +55,16 @@ public class UsersModel {
     }
 
     /**
-     * Logs out the current user.
+     * Logs out the current user and notifies the listener on complete.
+     *
+     * @param listener The listener to set.
      */
-    public void logoutCurrentUser() {
+    public void logoutCurrentUser(OnCompleteListener listener) {
         _modelFirebase.logoutCurrentUser();
+
+        // Clears all the live data members (in order to prevent a data leak with the next user to login in the session):
+        this.clearAllLiveData();
+        RemediesModel.getInstance().clearAllLiveData();
     }
 
     /**
