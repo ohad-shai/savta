@@ -9,7 +9,7 @@
     <string name="login">התחברות</string>
     <string name="login_auth_invalid">דוא\"ל או סיסמה לא נכונים</string>
     <string name="register">הרשמה</string>
-    <string name="register_email_is_taken">קיים משתמש עם כתובת הדוא\"ל שסיפקת</string>
+    <string name="email_already_taken">קיים משתמש עם כתובת הדוא\"ל שסיפקת</string>
     <string name="password">סיסמה</string>
     <string name="password_required">יש למלא סיסמה</string>
     <string name="password_minimum_6_letters">יש למלא סיסמה עם לפחות 6 תווים</string>
@@ -20,7 +20,8 @@
     <string name="email_required">יש למלא דוא\"ל</string>
     <string name="email_invalid_format">יש למלא כתובת דוא\"ל תקינה</string>
     <string name="change_full_name">שינוי שם מלא</string>
-    <string name="change_email_not_supported">כתובת דוא\"ל אינה ניתנת לשינוי, יש ליצור קשר</string>
+    <string name="change_email">שינוי דוא\"ל</string>
+    <string name="change_email_enter_password">יש להזין סיסמה על מנת לעדכן כתובת דוא\"ל:</string>
     <string name="change_password">שינוי סיסמה</string>
     <string name="delete_account">מחיקת חשבון</string>
     <string name="against">נגד</string>

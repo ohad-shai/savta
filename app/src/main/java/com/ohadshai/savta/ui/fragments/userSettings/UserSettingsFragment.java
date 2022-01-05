@@ -20,6 +20,7 @@ import com.ohadshai.savta.entities.User;
 import com.ohadshai.savta.ui.activities.LoginActivity;
 import com.ohadshai.savta.ui.dialogs.AboutDialog;
 import com.ohadshai.savta.ui.dialogs.DeleteAccountDialog;
+import com.ohadshai.savta.ui.dialogs.UpdateEmailDialog;
 import com.ohadshai.savta.ui.dialogs.UpdateFullNameDialog;
 import com.ohadshai.savta.ui.dialogs.UpdatePasswordDialog;
 
@@ -70,7 +71,7 @@ public class UserSettingsFragment extends PreferenceFragmentCompat implements Pr
     @Override
     public boolean onPreferenceClick(Preference preference) {
         String key = preference.getKey();
-        // Full Name:
+        // Change Full Name:
         if (key.equals(getString(R.string.pref_key_full_name))) {
             UpdateFullNameDialog dialog = UpdateFullNameDialog.make((AppCompatActivity) requireActivity());
             dialog.setOnUpdateSuccessListener(new UpdateFullNameDialog.OnUpdateSuccessListener() {
@@ -81,9 +82,16 @@ public class UserSettingsFragment extends PreferenceFragmentCompat implements Pr
             });
             dialog.show();
         }
-        // Email:
+        // Change Email:
         else if (key.equals(getString(R.string.pref_key_email))) {
-            Snackbar.make(requireView(), R.string.change_email_not_supported, Snackbar.LENGTH_LONG).show();
+            UpdateEmailDialog dialog = UpdateEmailDialog.make((AppCompatActivity) requireActivity());
+            dialog.setOnUpdateSuccessListener(new UpdateEmailDialog.OnUpdateSuccessListener() {
+                @Override
+                public void onUpdateSuccess(String email) {
+                    preference.setSummary(email);
+                }
+            });
+            dialog.show();
         }
         // Change Password:
         else if (key.equals(getString(R.string.pref_key_change_password))) {

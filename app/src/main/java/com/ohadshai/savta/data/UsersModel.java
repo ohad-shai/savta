@@ -2,6 +2,7 @@ package com.ohadshai.savta.data;
 
 import com.ohadshai.savta.data.firebase.UsersModelFirebase;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
+import com.ohadshai.savta.data.utils.OnEmailUpdateCompleteListener;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
 import com.ohadshai.savta.entities.User;
@@ -88,6 +89,17 @@ public class UsersModel {
     }
 
     /**
+     * Updates the email address of the current user and notifies the listener on complete.
+     *
+     * @param password The user's password to re-authenticate.
+     * @param email    The user's email address to update.
+     * @param listener The listener to set.
+     */
+    public void updateEmailAddress(String password, String email, OnEmailUpdateCompleteListener listener) {
+        _modelFirebase.updateEmailAddress(password, email, listener);
+    }
+
+    /**
      * Updates the password of the current user and notifies the listener on complete.
      *
      * @param currentPassword The current password of the user.
@@ -99,13 +111,17 @@ public class UsersModel {
     }
 
     /**
-     * Deletes the current user and notifies the listener on complete.
+     * Deletes the current user account and notifies the listener on complete.
      *
-     * @param password The password of the user to delete.
+     * @param password The user's password to re-authenticate.
      * @param listener The listener to set.
      */
-    public void delete(String password, OnLoginCompleteListener listener) {
-        _modelFirebase.delete(password, listener);
+    public void deleteAccount(String password, OnLoginCompleteListener listener) {
+        _modelFirebase.deleteAccount(password, listener);
+
+        // Clears all the live data members (in order to prevent a data leak with the next user to login in the session):
+        this.clearAllLiveData();
+        RemediesModel.getInstance().clearAllLiveData();
     }
 
     //endregion

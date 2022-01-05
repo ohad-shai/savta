@@ -18,29 +18,37 @@ import androidx.fragment.app.DialogFragment;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.UsersModel;
-import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
+import com.ohadshai.savta.data.utils.OnEmailUpdateCompleteListener;
 import com.ohadshai.savta.entities.User;
 import com.ohadshai.savta.utils.AndroidUtils;
+import com.ohadshai.savta.utils.ValidationUtils;
 import com.ohadshai.savta.utils.views.ProgressButton;
 
 /**
- * Represents a dialog for deleting the current user's account.
+ * Represents a dialog for updating the current user's email.
  */
-public class DeleteAccountDialog extends DialogFragment {
-    private final String DIALOG_TAG = "dialog_delete_account";
+public class UpdateEmailDialog extends DialogFragment {
+    private final String DIALOG_TAG = "dialog_update_email";
     private final AppCompatActivity _activity;
-    private EditText _txtPassword;
-    private ProgressButton _progressBtnDelete;
-    private OnDeleteSuccessListener _onDeleteSuccessListener;
+    private User _user;
+    private EditText _txtPassword, _txtEmail;
+    private ProgressButton _progressBtnSave;
+    private OnUpdateSuccessListener _onUpdateSuccessListener;
 
-    private DeleteAccountDialog(@NonNull AppCompatActivity activity) {
+    private UpdateEmailDialog(@NonNull AppCompatActivity activity) {
         _activity = activity;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_delete_account, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_update_email, null);
+
+        // Gets the current user's info:
+        _user = UsersModel.getInstance().getCurrentUser();
+        if (_user == null) {
+            throw new IllegalStateException("User cannot be null in UpdateEmailDialog.");
+        }
 
         _txtPassword = view.findViewById(R.id.txtPassword);
         _txtPassword.setOnKeyListener(new View.OnKeyListener() {
@@ -51,13 +59,23 @@ public class DeleteAccountDialog extends DialogFragment {
             }
         });
 
-        _progressBtnDelete = view.findViewById(R.id.progressBtnDelete);
-        _progressBtnDelete.setEnabled(false);
-        _progressBtnDelete.setOnClickListener(new ProgressButton.OnClickListener() {
+        _txtEmail = view.findViewById(R.id.txtEmail);
+        _txtEmail.setText(_user.getEmail());
+        _txtEmail.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                validateForm(false);
+                return false;
+            }
+        });
+
+        _progressBtnSave = view.findViewById(R.id.progressBtnSave);
+        _progressBtnSave.setEnabled(false);
+        _progressBtnSave.setOnClickListener(new ProgressButton.OnClickListener() {
             @Override
             public void onClick(ProgressButton progressButton) {
                 if (validateForm(true) && !progressButton.isInProgress()) {
-                    deleteAccount();
+                    saveChanges();
                 }
             }
         });
@@ -73,7 +91,7 @@ public class DeleteAccountDialog extends DialogFragment {
         });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(_activity);
-        builder.setTitle(R.string.delete_account);
+        builder.setTitle(R.string.change_email);
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -94,8 +112,8 @@ public class DeleteAccountDialog extends DialogFragment {
      * @param activity The caller activity.
      * @return Returns the instance of the dialog.
      */
-    public static DeleteAccountDialog make(@NonNull AppCompatActivity activity) {
-        return new DeleteAccountDialog(activity);
+    public static UpdateEmailDialog make(@NonNull AppCompatActivity activity) {
+        return new UpdateEmailDialog(activity);
     }
 
     //endregion
@@ -103,13 +121,13 @@ public class DeleteAccountDialog extends DialogFragment {
     //region Public API
 
     /**
-     * Sets a listener for delete success from the dialog.
+     * Sets a listener for update success from the dialog.
      *
      * @param listener The listener to set.
      * @return Returns the dialog instance.
      */
-    public DeleteAccountDialog setOnDeleteSuccessListener(OnDeleteSuccessListener listener) {
-        _onDeleteSuccessListener = listener;
+    public UpdateEmailDialog setOnUpdateSuccessListener(OnUpdateSuccessListener listener) {
+        _onUpdateSuccessListener = listener;
         return this;
     }
 
@@ -133,13 +151,19 @@ public class DeleteAccountDialog extends DialogFragment {
      */
     private boolean validateForm(boolean alert) {
         String password = _txtPassword.getText().toString().trim();
+        String email = _txtEmail.getText().toString().trim();
 
+        // Checks the new email is different from the current one:
+        if (email.equals(_user.getEmail())) {
+            _progressBtnSave.setEnabled(false);
+            return false;
+        }
         // Checks password is not empty:
         if (TextUtils.isEmpty(password)) {
             if (alert) {
                 _txtPassword.setError(getString(R.string.password_required));
             }
-            _progressBtnDelete.setEnabled(false);
+            _progressBtnSave.setEnabled(false);
             return false;
         }
         // Checks password is minimum 6 letters:
@@ -147,44 +171,68 @@ public class DeleteAccountDialog extends DialogFragment {
             if (alert) {
                 _txtPassword.setError(getString(R.string.password_minimum_6_letters));
             }
-            _progressBtnDelete.setEnabled(false);
+            _progressBtnSave.setEnabled(false);
             return false;
         }
-        _progressBtnDelete.setEnabled(true);
+        // Checks email is not empty:
+        if (TextUtils.isEmpty(email)) {
+            if (alert) {
+                _txtEmail.setError(getString(R.string.email_required));
+            }
+            _progressBtnSave.setEnabled(false);
+            return false;
+        }
+        // Checks email format is valid:
+        if (!ValidationUtils.isEmailValid(email)) {
+            if (alert) {
+                _txtEmail.setError(getString(R.string.email_invalid_format));
+            }
+            _progressBtnSave.setEnabled(false);
+            return false;
+        }
+        _progressBtnSave.setEnabled(true);
         return true;
     }
 
     /**
-     * Performs a delete account procedure.
+     * Performs a save procedure.
      *
      * @apiNote NOTE: Make sure that the form is validated before calling this method.
      */
-    private void deleteAccount() {
-        _progressBtnDelete.startProgress();
+    private void saveChanges() {
+        _progressBtnSave.startProgress();
         setCancelable(false);
         AndroidUtils.hideKeyboard(requireActivity());
 
         String password = _txtPassword.getText().toString().trim();
+        String email = _txtEmail.getText().toString().trim();
 
-        UsersModel.getInstance().deleteAccount(password, new OnLoginCompleteListener() {
+        UsersModel.getInstance().updateEmailAddress(password, email, new OnEmailUpdateCompleteListener() {
             @Override
             public void onSuccess(User user) {
-                if (_onDeleteSuccessListener != null) {
-                    _onDeleteSuccessListener.onDeleteSuccess();
+                if (_onUpdateSuccessListener != null) {
+                    _onUpdateSuccessListener.onUpdateSuccess(user.getEmail());
                 }
                 dismiss();
             }
 
             @Override
+            public void onCollision() {
+                _progressBtnSave.stopProgress();
+                setCancelable(true);
+                Toast.makeText(requireContext(), R.string.email_already_taken, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
             public void onInvalidCredentials() {
-                _progressBtnDelete.stopProgress();
+                _progressBtnSave.stopProgress();
                 setCancelable(true);
                 Toast.makeText(requireContext(), R.string.password_incorrect, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Exception exception) {
-                _progressBtnDelete.stopProgress();
+                _progressBtnSave.stopProgress();
                 setCancelable(true);
                 Toast.makeText(requireContext(), R.string.failure_message, Toast.LENGTH_SHORT).show();
             }
@@ -194,10 +242,10 @@ public class DeleteAccountDialog extends DialogFragment {
     //endregion
 
     /**
-     * Represents a listener for delete success.
+     * Represents a listener for update success.
      */
-    public interface OnDeleteSuccessListener {
-        void onDeleteSuccess();
+    public interface OnUpdateSuccessListener {
+        void onUpdateSuccess(String email);
     }
 
 }

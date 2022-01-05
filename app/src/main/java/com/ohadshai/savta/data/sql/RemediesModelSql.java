@@ -45,9 +45,9 @@ public class RemediesModelSql {
         return AppLocalDb.db.remediesDao().getAllByUser(userId);
     }
 
-    public void update(Remedy remedy, OnCompleteListener listener) {
+    public void delete(String id, OnCompleteListener listener) {
         executor.execute(() -> {
-            AppLocalDb.db.remediesDao().insert(remedy);
+            AppLocalDb.db.remediesDao().delete(id);
             mainThread.post(() -> {
                 if (listener != null) {
                     listener.onSuccess();
@@ -56,9 +56,9 @@ public class RemediesModelSql {
         });
     }
 
-    public void delete(Remedy remedy, OnCompleteListener listener) {
+    public void deleteAllByUser(String userId, OnCompleteListener listener) {
         executor.execute(() -> {
-            AppLocalDb.db.remediesDao().delete(remedy);
+            AppLocalDb.db.remediesDao().deleteAllByUser(userId);
             mainThread.post(() -> {
                 if (listener != null) {
                     listener.onSuccess();

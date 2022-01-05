@@ -19,7 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.transition.TransitionInflater;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
+import com.ohadshai.savta.data.RemediesModel;
+import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.databinding.FragmentRemedyDetailsBinding;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.utils.SharedElementsUtils;
@@ -86,8 +89,19 @@ public class RemedyDetailsFragment extends Fragment {
             );
             return true;
         } else if (id == R.id.action_delete) {
-            // TODO... do delete
-            Navigation.findNavController(requireView()).popBackStack();
+            // TODO: show progress
+            RemediesModel.getInstance().delete(_remedy.getId(), new OnCompleteListener() {
+                @Override
+                public void onSuccess() {
+                    Navigation.findNavController(requireView()).popBackStack();
+                }
+
+                @Override
+                public void onFailure() {
+                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                    // TODO: stop progress
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);

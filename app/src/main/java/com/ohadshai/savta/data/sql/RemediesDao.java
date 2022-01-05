@@ -29,7 +29,10 @@ public interface RemediesDao {
     @Query("SELECT * FROM Remedies WHERE _postedByUserId = :userId ORDER BY _dateLastUpdated DESC")
     LiveData<List<Remedy>> getAllByUser(String userId);
 
-    @Delete
-    void delete(Remedy remedy);
+    @Query("DELETE FROM Remedies WHERE _id = :id")
+    void delete(String id);
+
+    @Query("DELETE FROM Remedies WHERE _postedByUserId = :userId")
+    void deleteAllByUser(String userId);
 
 }

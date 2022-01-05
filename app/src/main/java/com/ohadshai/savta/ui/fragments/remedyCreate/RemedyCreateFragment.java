@@ -182,7 +182,7 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
         remedy.setName(_binding.remedyCreateTxtName.getText().toString().trim());
         remedy.setProblemDescription(_binding.remedyCreateTxtProblem.getText().toString().trim());
         remedy.setTreatmentDescription(_binding.remedyCreateTxtTreatment.getText().toString().trim());
-        remedy.setImageUrl(null); // TODO
+        remedy.setImageUrl(null); // TODO Image
         remedy.setPostedByUserId(user.getId());
         remedy.setPostedByUserName(user.getFullName());
 

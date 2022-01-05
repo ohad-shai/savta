@@ -15,12 +15,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.ohadshai.savta.data.RemediesModel;
+import com.ohadshai.savta.data.utils.OnEmailUpdateCompleteListener;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
 import com.ohadshai.savta.entities.User;
@@ -82,25 +81,35 @@ public class UsersModelFirebase {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    listener.onSuccess(user);
+                                                                    if (listener != null) {
+                                                                        listener.onSuccess(user);
+                                                                    }
                                                                 } else {
-                                                                    Log.w("firebase:register", "storeInUsersCollection:failure", task.getException());
-                                                                    listener.onFailure(task.getException());
+                                                                    Log.w("UsersModelFirebase", "register:storeInUsersCollection:failure", task.getException());
+                                                                    if (listener != null) {
+                                                                        listener.onFailure(task.getException());
+                                                                    }
                                                                 }
                                                             }
                                                         });
                                             } else {
-                                                Log.w("firebase:register", "user:updateProfile:failure", task.getException());
-                                                listener.onFailure(task.getException());
+                                                Log.w("UsersModelFirebase", "register:updateProfile:failure", task.getException());
+                                                if (listener != null) {
+                                                    listener.onFailure(task.getException());
+                                                }
                                             }
                                         }
                                     });
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                listener.onCollision();
+                                if (listener != null) {
+                                    listener.onCollision();
+                                }
                             } else {
-                                Log.w("firebase:register", "createUserWithEmailAndPassword:failure", task.getException());
-                                listener.onFailure(task.getException());
+                                Log.w("UsersModelFirebase", "register:createUserWithEmailAndPassword:failure", task.getException());
+                                if (listener != null) {
+                                    listener.onFailure(task.getException());
+                                }
                             }
                         }
                     }
@@ -116,13 +125,19 @@ public class UsersModelFirebase {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                             User user = convertFirebaseUserToApplicationUser(firebaseUser);
-                            listener.onSuccess(user);
+                            if (listener != null) {
+                                listener.onSuccess(user);
+                            }
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                listener.onInvalidCredentials();
+                                if (listener != null) {
+                                    listener.onInvalidCredentials();
+                                }
                             } else {
-                                Log.w("firebase:login", "signInWithEmailAndPassword:failure", task.getException());
-                                listener.onFailure(task.getException());
+                                Log.w("UsersModelFirebase", "login:signInWithEmailAndPassword:failure", task.getException());
+                                if (listener != null) {
+                                    listener.onFailure(task.getException());
+                                }
                             }
                         }
                     }
@@ -167,130 +182,192 @@ public class UsersModelFirebase {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                listener.onSuccess();
+                                                if (listener != null) {
+                                                    listener.onSuccess();
+                                                }
                                             } else {
-                                                Log.w("firebase:updateFullName", "users:update:failure", task.getException());
-                                                listener.onFailure();
+                                                Log.w("UserModelFirebase", "updateFullName:firestore-user-data:failure", task.getException());
+                                                if (listener != null) {
+                                                    listener.onFailure();
+                                                }
                                             }
                                         }
                                     });
                         } else {
-                            Log.w("firebase:updateFullName", "firebaseUser:updateProfile:failure", task.getException());
-                            listener.onFailure();
+                            Log.w("UserModelFirebase", "updateFullName:updateProfile:failure", task.getException());
+                            if (listener != null) {
+                                listener.onFailure();
+                            }
                         }
                     }
                 });
+    }
+
+    public void updateEmailAddress(String password, String email, OnEmailUpdateCompleteListener listener) {
+        // Re-authenticates the user, because Firebase will throw an exception if the user is not recently logged-in when performing security operations:
+        this.reauthenticate(password, new OnLoginCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+                // Updates the user's password after authenticated successfully:
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                firebaseUser.updateEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    User user = convertFirebaseUserToApplicationUser(firebaseUser);
+                                    // Updates the user data in the Firebase Firestore database:
+                                    Map<String, Object> updateValues = new HashMap<>();
+                                    updateValues.put(FIELD_EMAIL, user.getEmail());
+                                    db.collection(COLLECTION_NAME)
+                                            .document(user.getId())
+                                            .update(updateValues)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        if (listener != null) {
+                                                            listener.onSuccess(user);
+                                                        }
+                                                    } else {
+                                                        Log.w("UsersModelFirebase", "updateEmailAddress:firestore-user-data:failure", task.getException());
+                                                        if (listener != null) {
+                                                            listener.onFailure(task.getException());
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        if (listener != null) {
+                                            listener.onCollision();
+                                        }
+                                    } else {
+                                        Log.w("UsersModelFirebase", "updateEmailAddress:updateEmail:failure", task.getException());
+                                        if (listener != null) {
+                                            listener.onFailure(task.getException());
+                                        }
+                                    }
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onInvalidCredentials() {
+                if (listener != null) {
+                    listener.onInvalidCredentials();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                if (listener != null) {
+                    listener.onFailure(exception);
+                }
+            }
+        });
     }
 
     public void updatePassword(String currentPassword, String newPassword, OnLoginCompleteListener listener) {
-        // Gets the current user:
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            throw new IllegalStateException("FirebaseUser cannot be null when updating user data.");
-        }
-        // Re-authenticates the user, because Firebase will throw an exception if the user is not recently logged-in:
-        AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), currentPassword);
-        firebaseUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // Updates the user's password after authenticated successfully:
-                            firebaseUser.updatePassword(newPassword)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                User user = convertFirebaseUserToApplicationUser(firebaseUser);
-                                                listener.onSuccess(user);
-                                            } else {
-                                                Log.w("firebase:updatePassword", "firebaseUser:updatePassword:failure", task.getException());
-                                                listener.onFailure(task.getException());
-                                            }
-                                        }
-                                    });
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                listener.onInvalidCredentials();
-                            } else {
-                                Log.w("firebase:updatePassword", "firebaseUser:reauthenticate:failure", task.getException());
-                                listener.onFailure(task.getException());
+        // Re-authenticates the user, because Firebase will throw an exception if the user is not recently logged-in when performing security operations:
+        this.reauthenticate(currentPassword, new OnLoginCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+                // Updates the user's password after authenticated successfully:
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                firebaseUser.updatePassword(newPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    User user = convertFirebaseUserToApplicationUser(firebaseUser);
+                                    if (listener != null) {
+                                        listener.onSuccess(user);
+                                    }
+                                } else {
+                                    Log.w("UsersModelFirebase", "updatePassword:failure", task.getException());
+                                    if (listener != null) {
+                                        listener.onFailure(task.getException());
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
+            }
+
+            @Override
+            public void onInvalidCredentials() {
+                if (listener != null) {
+                    listener.onInvalidCredentials();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                if (listener != null) {
+                    listener.onFailure(exception);
+                }
+            }
+        });
     }
 
-    public void delete(String password, OnLoginCompleteListener listener) {
-        // Gets the current user:
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            throw new IllegalStateException("FirebaseUser cannot be null when deleting the user.");
-        }
-        // Re-authenticates the user, because Firebase will throw an exception if the user is not recently logged-in:
-        AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), password);
-        firebaseUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // (1) Deletes the remedies created by the user from the Firebase Firestore database:
-                            CollectionReference remediesCollection = db.collection(RemediesModelFirebase.COLLECTION_NAME);
-                            remediesCollection.whereEqualTo(RemediesModelFirebase.FIELD_POSTED_BY_USER_ID, firebaseUser.getUid())
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                QuerySnapshot taskResult = task.getResult();
-                                                if (taskResult != null) {
-                                                    for (DocumentSnapshot document : taskResult) {
-                                                        remediesCollection.document(document.getId()).delete();
+    public void deleteAccount(String password, OnLoginCompleteListener listener) {
+        // Re-authenticates the user, because Firebase will throw an exception if the user is not recently logged-in when performing security operations:
+        this.reauthenticate(password, new OnLoginCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+                // (1) Deletes the user info from the Firebase Firestore database:
+                db.collection(COLLECTION_NAME)
+                        .document(user.getId())
+                        .delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    // (2) Deletes the user from Firebase Authentication:
+                                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                    firebaseUser.delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // (3) Deletes the remedies created by the user from the Firebase Firestore database:
+                                                        RemediesModel.getInstance().deleteAllByUser(user.getId(), null);
+                                                        if (listener != null) {
+                                                            listener.onSuccess(null);
+                                                        }
+                                                    } else {
+                                                        Log.w("UsersModelFirebase", "deleteAccount:firebase-auth-delete:failure", task.getException());
+                                                        if (listener != null) {
+                                                            listener.onFailure(task.getException());
+                                                        }
                                                     }
                                                 }
-                                                // (2) Deletes the user info from the Firebase Firestore database:
-                                                db.collection(COLLECTION_NAME)
-                                                        .document(firebaseUser.getUid())
-                                                        .delete()
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    // (3) Deletes the user from Firebase Authentication:
-                                                                    firebaseUser.delete()
-                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        listener.onSuccess(null);
-                                                                                    } else {
-                                                                                        Log.w("firebase:delete", "firebaseUser:delete:failure", task.getException());
-                                                                                        listener.onFailure(task.getException());
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                } else {
-                                                                    Log.w("firebase:delete", "users:delete:failure", task.getException());
-                                                                    listener.onFailure(task.getException());
-                                                                }
-                                                            }
-                                                        });
-                                            } else {
-                                                Log.w("firebase:delete", "remedies:delete:failure", task.getException());
-                                                listener.onFailure(task.getException());
-                                            }
-                                        }
-                                    });
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                listener.onInvalidCredentials();
-                            } else {
-                                Log.w("firebase:delete", "firebaseUser:reauthenticate:failure", task.getException());
-                                listener.onFailure(task.getException());
+                                            });
+                                } else {
+                                    Log.w("UsersModelFirebase", "deleteAccount:firestore-users-data-delete:failure", task.getException());
+                                    if (listener != null) {
+                                        listener.onFailure(task.getException());
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
+            }
+
+            @Override
+            public void onInvalidCredentials() {
+                if (listener != null) {
+                    listener.onInvalidCredentials();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                if (listener != null) {
+                    listener.onFailure(exception);
+                }
+            }
+        });
     }
 
     //endregion
@@ -317,6 +394,39 @@ public class UsersModelFirebase {
             map.put(FIELD_DATE_REGISTERED, user.getDateRegistered());
         }
         return map;
+    }
+
+    private void reauthenticate(String password, OnLoginCompleteListener listener) {
+        // Gets the current user:
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            throw new IllegalStateException("FirebaseUser cannot be null when re-authenticating the user.");
+        }
+        // Re-authenticates the user:
+        AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), password);
+        firebaseUser.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (listener != null) {
+                                User user = convertFirebaseUserToApplicationUser(firebaseUser);
+                                listener.onSuccess(user);
+                            }
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                if (listener != null) {
+                                    listener.onInvalidCredentials();
+                                }
+                            } else {
+                                Log.w("UserModelFirebase", "reauthenticate:failure", task.getException());
+                                if (listener != null) {
+                                    listener.onFailure(task.getException());
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     //endregion

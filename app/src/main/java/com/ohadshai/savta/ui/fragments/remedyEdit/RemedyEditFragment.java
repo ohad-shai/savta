@@ -11,19 +11,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.transition.TransitionInflater;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.databinding.FragmentRemedyEditBinding;
 import com.ohadshai.savta.entities.Remedy;
-import com.ohadshai.savta.ui.fragments.remedyDetails.RemedyDetailsFragmentArgs;
 import com.ohadshai.savta.utils.AlertDialogRtlHelper;
 import com.squareup.picasso.Picasso;
 
 public class RemedyEditFragment extends Fragment {
 
-    private RemedyEditViewModel _viewModel;
     private FragmentRemedyEditBinding _binding;
     private boolean _isImageLoaded;
     private Remedy _remedy;
@@ -43,8 +40,6 @@ public class RemedyEditFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        _viewModel = new ViewModelProvider(this).get(RemedyEditViewModel.class);
-
         _binding = FragmentRemedyEditBinding.inflate(inflater, container, false);
         View rootView = _binding.getRoot();
 
@@ -107,7 +102,7 @@ public class RemedyEditFragment extends Fragment {
             public void onClick(DialogInterface dialog, int index) {
                 switch (index) {
                     case 0:
-                        // TODO
+                        // TODO Image
                         break;
                     case 1:
                         break;

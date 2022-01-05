@@ -167,7 +167,7 @@ public class RegisterFragment extends Fragment {
 
             @Override
             public void onCollision() {
-                Snackbar.make(requireView(), R.string.register_email_is_taken, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(requireView(), R.string.email_already_taken, Snackbar.LENGTH_SHORT).show();
                 _binding.progressBtnRegister.stopProgress();
             }
 

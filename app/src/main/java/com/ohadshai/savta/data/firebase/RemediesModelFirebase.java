@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,6 +43,7 @@ public class RemediesModelFirebase {
     public static final String FIELD_POSTED_BY_USER_NAME = "posted_by_user_name";
     public static final String FIELD_DATE_POSTED = "date_posted";
     public static final String FIELD_DATE_LAST_UPDATED = "date_last_updated";
+    public static final String FIELD_DATE_DELETED = "date_deleted";
 
     //endregion
 
@@ -64,14 +66,18 @@ public class RemediesModelFirebase {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        listener.onSuccess();
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "create", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
                     }
                 });
     }
@@ -85,9 +91,13 @@ public class RemediesModelFirebase {
                     public void onSuccess(DocumentSnapshot document) {
                         if (document.exists()) {
                             Remedy remedy = parseRemedyFromDocument(document);
-                            listener.onSuccess(remedy);
+                            if (listener != null) {
+                                listener.onSuccess(remedy);
+                            }
                         } else {
-                            listener.onFailure();
+                            if (listener != null) {
+                                listener.onFailure();
+                            }
                         }
                     }
                 })
@@ -95,7 +105,9 @@ public class RemediesModelFirebase {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "get", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
                     }
                 });
     }
@@ -113,14 +125,18 @@ public class RemediesModelFirebase {
                             Remedy remedy = parseRemedyFromDocument(document);
                             remedies.add(remedy);
                         }
-                        listener.onSuccess(remedies);
+                        if (listener != null) {
+                            listener.onSuccess(remedies);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "getAll", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
                     }
                 });
     }
@@ -139,14 +155,18 @@ public class RemediesModelFirebase {
                             Remedy remedy = parseRemedyFromDocument(document);
                             remedies.add(remedy);
                         }
-                        listener.onSuccess(remedies);
+                        if (listener != null) {
+                            listener.onSuccess(remedies);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "getAll", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
                     }
                 });
     }
@@ -155,38 +175,94 @@ public class RemediesModelFirebase {
         Map<String, Object> data = this.mapRemedyToDocument(remedy, false);
 
         db.collection(COLLECTION_NAME)
-                .document(String.valueOf(remedy.getId()))
+                .document(remedy.getId())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        listener.onSuccess();
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "update", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
                     }
                 });
     }
 
-    public void delete(Remedy remedy, OnCompleteListener listener) {
+    public void delete(String id, OnCompleteListener listener) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_DATE_LAST_UPDATED, FieldValue.serverTimestamp());
+        data.put(FIELD_DATE_DELETED, FieldValue.serverTimestamp());
         db.collection(COLLECTION_NAME)
-                .document(String.valueOf(remedy.getId()))
-                .delete()
+                .document(id)
+                .update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        listener.onSuccess();
+                        if (listener != null) {
+                            listener.onSuccess();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("RemediesModelFirebase", "delete", e);
-                        listener.onFailure();
+                        if (listener != null) {
+                            listener.onFailure();
+                        }
+                    }
+                });
+    }
+
+    public void deleteAllByUser(String userId, OnCompleteListener listener) {
+        db.collection(COLLECTION_NAME)
+                .whereEqualTo(FIELD_POSTED_BY_USER_ID, userId)
+                .get()
+                .addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot taskResult = task.getResult();
+                            if (taskResult != null) {
+                                List<DocumentSnapshot> docs = taskResult.getDocuments();
+                                for (int i = 0; i < docs.size(); i++) {
+                                    // Checks if it's the last document to delete, then sets a listener:
+                                    if (i == docs.size() - 1) {
+                                        delete(docs.get(i).getId(), new OnCompleteListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                if (listener != null) {
+                                                    listener.onSuccess();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure() {
+                                                Log.w("RemediesModelFirebase", "deleteAllByUser:specific-delete:failure", task.getException());
+                                                if (listener != null) {
+                                                    listener.onFailure();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        delete(docs.get(i).getId(), null);
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.w("RemediesModelFirebase", "deleteAllByUser:failure", task.getException());
+                            if (listener != null) {
+                                listener.onFailure();
+                            }
+                        }
                     }
                 });
     }
@@ -210,6 +286,7 @@ public class RemediesModelFirebase {
             map.put(FIELD_DATE_POSTED, remedy.getDatePosted());
         }
         map.put(FIELD_DATE_LAST_UPDATED, FieldValue.serverTimestamp());
+        map.put(FIELD_DATE_DELETED, null);
         return map;
     }
 
@@ -224,6 +301,7 @@ public class RemediesModelFirebase {
         remedy.setPostedByUserName(document.getString(FIELD_POSTED_BY_USER_NAME));
         remedy.setDatePosted(document.getDate(FIELD_DATE_POSTED));
         remedy.setDateLastUpdated(document.getDate(FIELD_DATE_LAST_UPDATED));
+        remedy.setDateDeleted(document.getDate(FIELD_DATE_DELETED));
         return remedy;
     }
 

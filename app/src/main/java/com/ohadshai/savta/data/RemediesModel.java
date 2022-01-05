@@ -114,10 +114,14 @@ public class RemediesModel {
         _modelFirebase.getAll(lastUpdateDate, new OnGetCompleteListener<List<Remedy>>() {
             @Override
             public void onSuccess(List<Remedy> remedies) {
-                // (3) Updates the local SQL DB with the updated records:
+                // (3) Updates the local SQL DB with the updated records, performs insert or delete if marked as deleted:
                 long highestDate = 0;
                 for (Remedy remedy : remedies) {
-                    _modelSql.insert(remedy, null);
+                    if (remedy.getDateDeleted() != null) {
+                        _modelSql.delete(remedy.getId(), null);
+                    } else {
+                        _modelSql.insert(remedy, null);
+                    }
                     if (remedy.getDateLastUpdated().getTime() > highestDate) {
                         highestDate = remedy.getDateLastUpdated().getTime();
                     }
@@ -176,10 +180,14 @@ public class RemediesModel {
         _modelFirebase.getAllByUser(userId, lastUpdateDate, new OnGetCompleteListener<List<Remedy>>() {
             @Override
             public void onSuccess(List<Remedy> remedies) {
-                // (3) Updates the local SQL DB with the updated records:
+                // (3) Updates the local SQL DB with the updated records, performs insert or delete if marked as deleted:
                 long highestDate = 0;
                 for (Remedy remedy : remedies) {
-                    _modelSql.insert(remedy, null);
+                    if (remedy.getDateDeleted() != null) {
+                        _modelSql.delete(remedy.getId(), null);
+                    } else {
+                        _modelSql.insert(remedy, null);
+                    }
                     if (remedy.getDateLastUpdated().getTime() > highestDate) {
                         highestDate = remedy.getDateLastUpdated().getTime();
                     }
@@ -218,11 +226,35 @@ public class RemediesModel {
     /**
      * Deletes the specified remedy and notifies the listener on complete.
      *
-     * @param remedy   The remedy to delete.
+     * @param id       The id of the remedy to delete.
      * @param listener The listener to set.
      */
-    public void delete(Remedy remedy, OnCompleteListener listener) {
-        _modelFirebase.delete(remedy, listener);
+    public void delete(String id, OnCompleteListener listener) {
+        _modelFirebase.delete(id, listener);
+    }
+
+    /**
+     * Deletes all the remedies that the specified user posted and notifies the listener on complete.
+     *
+     * @param userId   The id of the user to delete all the remedies.
+     * @param listener The listener to set.
+     */
+    public void deleteAllByUser(String userId, OnCompleteListener listener) {
+        // Performs local delete:
+        _modelSql.deleteAllByUser(userId, new OnCompleteListener() {
+            @Override
+            public void onSuccess() {
+                // Performs cloud delete:
+                _modelFirebase.deleteAllByUser(userId, listener);
+            }
+
+            @Override
+            public void onFailure() {
+                if (listener != null) {
+                    listener.onFailure();
+                }
+            }
+        });
     }
 
     //endregion

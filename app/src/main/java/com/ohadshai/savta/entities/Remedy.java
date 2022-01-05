@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -23,23 +24,34 @@ public class Remedy implements Parcelable {
     @PrimaryKey
     @NonNull
     private String _id;
+
     @NonNull
     private String _name;
+
     @NonNull
     private String _problemDescription;
+
     @NonNull
     private String _treatmentDescription;
+
     private String _imageUrl;
+
     @NonNull
     private String _postedByUserId;
+
     @NonNull
     private String _postedByUserName;
+
     @NonNull
     @TypeConverters(DateConverter.class)
     private Date _datePosted;
+
     @NonNull
     @TypeConverters(DateConverter.class)
     private Date _dateLastUpdated;
+
+    @Ignore
+    private Date _dateDeleted;
 
     //endregion
 
@@ -118,6 +130,14 @@ public class Remedy implements Parcelable {
 
     public void setDateLastUpdated(Date dateLastUpdated) {
         this._dateLastUpdated = dateLastUpdated;
+    }
+
+    public Date getDateDeleted() {
+        return _dateDeleted;
+    }
+
+    public void setDateDeleted(Date dateDeleted) {
+        this._dateDeleted = dateDeleted;
     }
 
     //region [Parcelable]
