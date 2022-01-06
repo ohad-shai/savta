@@ -1,4 +1,4 @@
-package com.ohadshai.savta.ui.activities;
+package com.ohadshai.savta.ui.activities.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -14,6 +14,7 @@ import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.databinding.ActivityLoginBinding;
 import com.ohadshai.savta.entities.User;
+import com.ohadshai.savta.ui.activities.main.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
      * Checks if the user is already authenticated - then navigates to the MainActivity.
      */
     private void checkUserAuthenticationToExit() {
-        User user = UsersModel.getInstance().getCurrentUser();
+        User user = UsersModel.getInstance().getCurrentUser().getValue();
         if (user != null) {
             startActivity(new Intent(this, MainActivity.class));
             finish();

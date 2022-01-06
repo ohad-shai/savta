@@ -1,6 +1,7 @@
 package com.ohadshai.savta.ui.fragments.feed;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import com.ohadshai.savta.ui.adapters.RemediesListAdapter;
 import com.ohadshai.savta.ui.dialogs.AboutDialog;
 import com.ohadshai.savta.utils.NetworkUtils;
 import com.ohadshai.savta.utils.SharedElementsUtils;
+import com.ohadshai.savta.utils.SharedPreferencesConsts;
 
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class FeedFragment extends Fragment {
 
     private FeedViewModel _viewModel;
     private FragmentFeedBinding _binding;
+    private boolean _isFeedInitializedBefore;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -48,6 +51,8 @@ public class FeedFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
+        _isFeedInitializedBefore = isFeedInitializedBefore();
 
         _binding = FragmentFeedBinding.inflate(inflater, container, false);
 
@@ -82,7 +87,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onChanged(List<Remedy> remedies) {
                 adapter.notifyDataSetChanged();
-                if (remedies.size() < 1) {
+                if (remedies.size() < 1 && _isFeedInitializedBefore) {
                     _binding.rvRemediesList.setVisibility(View.GONE);
                     _binding.llRemediesNotFound.setVisibility(View.VISIBLE);
                 } else {
@@ -127,6 +132,30 @@ public class FeedFragment extends Fragment {
     //region Private Methods
 
     /**
+     * Checks if the feed was initialized before.
+     *
+     * @return Returns true if the feed was initialized before, otherwise false.
+     * @apiNote This is in order to prevent "empty results" message flicker in the initialization.
+     */
+    private boolean isFeedInitializedBefore() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(SharedPreferencesConsts.IS_FEED_INITIALIZED, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(SharedPreferencesConsts.IS_FEED_INITIALIZED, false);
+    }
+
+    /**
+     * Sets an indicator indicating that the feed was initialized before.
+     *
+     * @apiNote This is in order to prevent "empty results" message flicker in the initialization.
+     */
+    private void setFeedInitialized() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(SharedPreferencesConsts.IS_FEED_INITIALIZED, Context.MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putBoolean(SharedPreferencesConsts.IS_FEED_INITIALIZED, true)
+                .apply();
+        _isFeedInitializedBefore = true;
+    }
+
+    /**
      * Refreshes the list of remedies from the cloud.
      */
     private void refreshRemediesList() {
@@ -138,6 +167,9 @@ public class FeedFragment extends Fragment {
                 @Override
                 public void onSuccess() {
                     _binding.swipeRefreshLayout.setRefreshing(false);
+                    if (!_isFeedInitializedBefore) {
+                        setFeedInitialized();
+                    }
                 }
 
                 @Override

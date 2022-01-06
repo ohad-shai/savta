@@ -1,16 +1,20 @@
-package com.ohadshai.savta.ui.activities;
+package com.ohadshai.savta.ui.activities.main;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -20,12 +24,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.UsersModel;
+import com.ohadshai.savta.data.utils.OnUserRefreshCompleteListener;
 import com.ohadshai.savta.databinding.ActivityMainBinding;
 import com.ohadshai.savta.entities.User;
+import com.ohadshai.savta.ui.activities.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, NavController.OnDestinationChangedListener {
 
     private AppBarConfiguration _AppBarConfiguration;
+    private MainViewModel _viewModel;
     private ActivityMainBinding _binding;
     private NavController _navController;
 
@@ -36,15 +43,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Forces the application to display in RTL:
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
+        // Checks on the background that the user is still authenticated in the cloud (not locked out or something):
+        this.refreshUserAuthentication();
+
+        _viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         _binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(_binding.getRoot());
         setSupportActionBar(_binding.appBarMain.toolbar);
-
-        // Gets the current user's info:
-        User user = UsersModel.getInstance().getCurrentUser();
-        if (user == null) {
-            throw new IllegalStateException("User cannot be null in MainActivity.");
-        }
 
         NavigationView navView = _binding.navView;
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations:
@@ -60,9 +66,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Shows the current user's info in the navigation drawer header:
         View navViewHeader = navView.getHeaderView(0);
         TextView navViewHeaderTxtName = navViewHeader.findViewById(R.id.nav_header_main_txtName);
-        navViewHeaderTxtName.setText(user.getFullName());
         TextView navViewHeaderTxtEmail = navViewHeader.findViewById(R.id.nav_header_main_txtEmail);
-        navViewHeaderTxtEmail.setText(user.getEmail());
+
+        // Gets the current user's info:
+        LiveData<User> user = _viewModel.getCurrentUser();
+        if (user == null) {
+            throw new IllegalStateException("User cannot be null in MainActivity.");
+        } else {
+            // Listens to data changes (while the fragment is alive):
+            user.observe(this, new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
+                    if (user != null) {
+                        navViewHeaderTxtName.setText(user.getFullName());
+                        navViewHeaderTxtEmail.setText(user.getEmail());
+                    }
+                }
+            });
+        }
 
         _binding.appBarMain.fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +146,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             _binding.appBarMain.fabAdd.hide();
             _binding.appBarMain.frameToolbarLogo.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Checks on the background that the user is still authenticated in the cloud (not locked out or deleted or something).
+     */
+    private void refreshUserAuthentication() {
+        UsersModel.getInstance().refreshCurrentUser(new OnUserRefreshCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+            }
+
+            @Override
+            public void onUnauthorized() {
+                userLogout();
+                Toast.makeText(getApplicationContext(), R.string.account_not_authorized, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+            }
+        });
     }
 
     /**

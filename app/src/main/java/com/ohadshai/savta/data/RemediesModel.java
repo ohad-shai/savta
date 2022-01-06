@@ -62,7 +62,8 @@ public class RemediesModel {
      *
      * @param id The id of the remedy to get.
      * @return Returns the LiveData object for the remedy.
-     * @implNote NOTE: The main thread will never know when the updates will occur, so it is used mainly for listening (to data updates).
+     * @apiNote NOTE: Used mainly for listening (to data updates), because the main thread will never know when the updates will occur.
+     * @implNote NOTE: This gets the data first from the local DB, and then from the cloud.
      */
     public LiveData<Remedy> get(String id) {
         if (_remedy == null || _remedy.getValue() == null || !_remedy.getValue().getId().equals(id)) {
@@ -73,11 +74,11 @@ public class RemediesModel {
     }
 
     /**
-     * Gets a remedy by the specified id and a listener for success & failure indicators.
+     * Gets a remedy by the specified id (from the cloud).
      *
      * @param id       The id of the remedy to get.
      * @param listener The listener to set.
-     * @implNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
+     * @apiNote NOTE: Use this method when it is needed to refresh the data from the cloud.
      */
     public void refreshGet(String id, OnCompleteListener listener) {
         // (1) Gets the local last update date indicator:
@@ -139,11 +140,10 @@ public class RemediesModel {
     }
 
     /**
-     * Gets the list of remedies (from the cloud) by a listener for success & failure indicators.
+     * Gets the list of remedies (from the cloud).
      *
      * @param listener The listener to set.
-     * @apiNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
-     * @implNote NOTE: This gets the data only from the cloud.
+     * @apiNote NOTE: Use this method when it is needed to refresh the data from the cloud.
      */
     public void refreshGetAll(OnCompleteListener listener) {
         // (1) Gets the local last update date indicator:

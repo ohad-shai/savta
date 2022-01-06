@@ -15,7 +15,7 @@ public class UserRemediesViewModel extends ViewModel {
     private final LiveData<List<Remedy>> _userRemedies;
 
     public UserRemediesViewModel() {
-        User user = UsersModel.getInstance().getCurrentUser();
+        User user = UsersModel.getInstance().getCurrentUser().getValue();
         if (user == null) {
             throw new IllegalStateException("User cannot be null in UserRemediesViewModel");
         }

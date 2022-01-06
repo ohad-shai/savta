@@ -45,7 +45,7 @@ public class UpdateEmailDialog extends DialogFragment {
         View view = getLayoutInflater().inflate(R.layout.dialog_update_email, null);
 
         // Gets the current user's info:
-        _user = UsersModel.getInstance().getCurrentUser();
+        _user = UsersModel.getInstance().getCurrentUser().getValue();
         if (_user == null) {
             throw new IllegalStateException("User cannot be null in UpdateEmailDialog.");
         }

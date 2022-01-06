@@ -44,7 +44,7 @@ public class UpdateFullNameDialog extends DialogFragment {
         View view = getLayoutInflater().inflate(R.layout.dialog_update_full_name, null);
 
         // Gets the current user's info:
-        _user = UsersModel.getInstance().getCurrentUser();
+        _user = UsersModel.getInstance().getCurrentUser().getValue();
         if (_user == null) {
             throw new IllegalStateException("User cannot be null in UpdateFullNameDialog.");
         }

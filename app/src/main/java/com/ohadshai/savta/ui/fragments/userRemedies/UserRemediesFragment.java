@@ -114,7 +114,7 @@ public class UserRemediesFragment extends Fragment {
             _binding.swipeRefreshLayout.setRefreshing(false);
         } else {
             _binding.swipeRefreshLayout.setRefreshing(true);
-            User user = UsersModel.getInstance().getCurrentUser();
+            User user = UsersModel.getInstance().getCurrentUser().getValue();
             if (user == null) {
                 throw new IllegalStateException("User cannot be null in UserRemediesFragment");
             }

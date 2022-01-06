@@ -19,7 +19,7 @@ import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.databinding.FragmentLoginBinding;
 import com.ohadshai.savta.entities.User;
-import com.ohadshai.savta.ui.activities.MainActivity;
+import com.ohadshai.savta.ui.activities.main.MainActivity;
 import com.ohadshai.savta.utils.AndroidUtils;
 import com.ohadshai.savta.utils.NetworkUtils;
 import com.ohadshai.savta.utils.ValidationUtils;

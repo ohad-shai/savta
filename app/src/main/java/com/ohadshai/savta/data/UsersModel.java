@@ -1,10 +1,14 @@
 package com.ohadshai.savta.data;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.ohadshai.savta.data.firebase.UsersModelFirebase;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnEmailUpdateCompleteListener;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
+import com.ohadshai.savta.data.utils.OnUserRefreshCompleteListener;
 import com.ohadshai.savta.entities.User;
 
 /**
@@ -13,6 +17,8 @@ import com.ohadshai.savta.entities.User;
 public class UsersModel {
     private static final UsersModel _instance = new UsersModel();
     private final UsersModelFirebase _modelFirebase;
+
+    private MutableLiveData<User> _user = new MutableLiveData<>();
 
     private UsersModel() {
         _modelFirebase = new UsersModelFirebase();
@@ -28,7 +34,7 @@ public class UsersModel {
      * Clears all the live data members.
      */
     public void clearAllLiveData() {
-
+        _user.setValue(null);
     }
 
     /**
@@ -69,12 +75,28 @@ public class UsersModel {
     }
 
     /**
-     * Gets the current user logged in.
+     * Gets the current user info (from local storage).
      *
-     * @return Returns the user object if logged-in, otherwise null.
+     * @return Returns the livedata object containing user object if logged-in or null if logged out.
      */
-    public User getCurrentUser() {
-        return _modelFirebase.getCurrentUser();
+    public LiveData<User> getCurrentUser() {
+        if (_user.getValue() == null) {
+            User user = _modelFirebase.getCurrentUser();
+            if (user != null) {
+                _user.setValue(user);
+            }
+        }
+        return _user;
+    }
+
+    /**
+     * Gets the current user info (from the cloud).
+     *
+     * @param listener The listener to set.
+     * @apiNote NOTE: Use this method when it is needed to refresh the data from the cloud.
+     */
+    public void refreshCurrentUser(OnUserRefreshCompleteListener listener) {
+        _modelFirebase.refreshCurrentUser(listener);
     }
 
     /**
@@ -85,7 +107,27 @@ public class UsersModel {
      * @param listener  The listener to set.
      */
     public void updateFullName(String firstName, String lastName, OnCompleteListener listener) {
-        _modelFirebase.updateFullName(firstName, lastName, listener);
+        _modelFirebase.updateFullName(firstName, lastName, new OnCompleteListener() {
+            @Override
+            public void onSuccess() {
+                User user = _user.getValue();
+                if (user != null) {
+                    user.setFirstName(firstName);
+                    user.setLastName(lastName);
+                    _user.setValue(user);
+                }
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                if (listener != null) {
+                    listener.onFailure();
+                }
+            }
+        });
     }
 
     /**
@@ -96,7 +138,38 @@ public class UsersModel {
      * @param listener The listener to set.
      */
     public void updateEmailAddress(String password, String email, OnEmailUpdateCompleteListener listener) {
-        _modelFirebase.updateEmailAddress(password, email, listener);
+        _modelFirebase.updateEmailAddress(password, email, new OnEmailUpdateCompleteListener() {
+            @Override
+            public void onSuccess(User user) {
+                if (_user.getValue() != null) {
+                    _user.setValue(user);
+                }
+                if (listener != null) {
+                    listener.onSuccess(user);
+                }
+            }
+
+            @Override
+            public void onCollision() {
+                if (listener != null) {
+                    listener.onCollision();
+                }
+            }
+
+            @Override
+            public void onInvalidCredentials() {
+                if (listener != null) {
+                    listener.onInvalidCredentials();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                if (listener != null) {
+                    listener.onFailure(exception);
+                }
+            }
+        });
     }
 
     /**

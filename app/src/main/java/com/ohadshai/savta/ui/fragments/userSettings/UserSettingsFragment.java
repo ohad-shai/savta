@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.entities.User;
-import com.ohadshai.savta.ui.activities.LoginActivity;
+import com.ohadshai.savta.ui.activities.login.LoginActivity;
 import com.ohadshai.savta.ui.dialogs.AboutDialog;
 import com.ohadshai.savta.ui.dialogs.DeleteAccountDialog;
 import com.ohadshai.savta.ui.dialogs.UpdateEmailDialog;
@@ -31,7 +31,7 @@ public class UserSettingsFragment extends PreferenceFragmentCompat implements Pr
         setHasOptionsMenu(true);
         setPreferencesFromResource(R.xml.user_settings, rootKey);
 
-        User user = UsersModel.getInstance().getCurrentUser();
+        User user = UsersModel.getInstance().getCurrentUser().getValue();
         if (user == null) {
             throw new IllegalStateException("User cannot be null in UserSettingsFragment.");
         }

@@ -7,7 +7,7 @@
     android:background="@drawable/light_green_gradient_background"
     android:fillViewport="true"
     android:layoutDirection="rtl"
-    tools:context=".ui.activities.LoginActivity">
+    tools:context=".ui.activities.login.LoginActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

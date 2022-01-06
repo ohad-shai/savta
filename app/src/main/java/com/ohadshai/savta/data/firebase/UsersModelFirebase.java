@@ -10,6 +10,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -22,6 +23,7 @@ import com.ohadshai.savta.data.RemediesModel;
 import com.ohadshai.savta.data.utils.OnEmailUpdateCompleteListener;
 import com.ohadshai.savta.data.utils.OnLoginCompleteListener;
 import com.ohadshai.savta.data.utils.OnRegisterCompleteListener;
+import com.ohadshai.savta.data.utils.OnUserRefreshCompleteListener;
 import com.ohadshai.savta.entities.User;
 
 import java.util.HashMap;
@@ -154,6 +156,46 @@ public class UsersModelFirebase {
             return null;
         } else {
             return this.convertFirebaseUserToApplicationUser(firebaseUser);
+        }
+    }
+
+    public void refreshCurrentUser(OnUserRefreshCompleteListener listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            if (listener != null) {
+                listener.onUnauthorized();
+            }
+        } else {
+            firebaseUser.reload()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser fireUser = FirebaseAuth.getInstance().getCurrentUser();
+                                if (fireUser != null) {
+                                    if (listener != null) {
+                                        User user = convertFirebaseUserToApplicationUser(fireUser);
+                                        listener.onSuccess(user);
+                                    }
+                                } else {
+                                    if (listener != null) {
+                                        listener.onUnauthorized();
+                                    }
+                                }
+                            } else {
+                                if (task.getException() instanceof FirebaseAuthException) {
+                                    if (listener != null) {
+                                        listener.onUnauthorized();
+                                    }
+                                } else {
+                                    Log.w("UsersModelFirebase", "refreshCurrentUser:reload:failure", task.getException());
+                                    if (listener != null) {
+                                        listener.onFailure(task.getException());
+                                    }
+                                }
+                            }
+                        }
+                    });
         }
     }
 

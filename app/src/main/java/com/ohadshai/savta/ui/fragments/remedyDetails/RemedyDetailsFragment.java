@@ -67,7 +67,7 @@ public class RemedyDetailsFragment extends Fragment {
         setReturnTransition(inflater.inflateTransition(android.R.transition.fade));
 
         // Checks if the remedy was posted by the current user, in order to allow him to update/delete:
-        User user = UsersModel.getInstance().getCurrentUser();
+        User user = UsersModel.getInstance().getCurrentUser().getValue();
         if (user == null) {
             throw new IllegalStateException("User cannot be null in RemedyDetailsFragment.");
         }
