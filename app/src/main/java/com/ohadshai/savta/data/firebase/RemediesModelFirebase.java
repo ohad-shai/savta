@@ -82,22 +82,21 @@ public class RemediesModelFirebase {
                 });
     }
 
-    public void get(int id, OnGetCompleteListener<Remedy> listener) {
+    public void get(String id, long lastUpdateDate, OnGetCompleteListener<Remedy> listener) {
         db.collection(COLLECTION_NAME)
-                .document(String.valueOf(id))
+                .whereEqualTo(FIELD_ID, id)
+                .whereGreaterThan(FIELD_DATE_LAST_UPDATED, new Timestamp(new Date(lastUpdateDate)))
+                .limit(1)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(DocumentSnapshot document) {
-                        if (document.exists()) {
-                            Remedy remedy = parseRemedyFromDocument(document);
-                            if (listener != null) {
-                                listener.onSuccess(remedy);
-                            }
-                        } else {
-                            if (listener != null) {
-                                listener.onFailure();
-                            }
+                    public void onSuccess(QuerySnapshot documents) {
+                        Remedy remedy = null;
+                        if (!documents.isEmpty()) {
+                            remedy = parseRemedyFromDocument(documents.getDocuments().get(0));
+                        }
+                        if (listener != null) {
+                            listener.onSuccess(remedy);
                         }
                     }
                 })
@@ -282,11 +281,12 @@ public class RemediesModelFirebase {
         map.put(FIELD_POSTED_BY_USER_NAME, remedy.getPostedByUserName());
         if (isCreate) {
             map.put(FIELD_DATE_POSTED, FieldValue.serverTimestamp());
+            map.put(FIELD_DATE_DELETED, null);
         } else {
             map.put(FIELD_DATE_POSTED, remedy.getDatePosted());
+            map.put(FIELD_DATE_DELETED, remedy.getDateDeleted());
         }
         map.put(FIELD_DATE_LAST_UPDATED, FieldValue.serverTimestamp());
-        map.put(FIELD_DATE_DELETED, null);
         return map;
     }
 

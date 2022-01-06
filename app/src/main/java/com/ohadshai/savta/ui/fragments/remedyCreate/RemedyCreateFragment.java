@@ -35,7 +35,6 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         _binding = FragmentRemedyCreateBinding.inflate(inflater, container, false);
-        View rootView = _binding.getRoot();
 
         _binding.remedyCreateFlPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +75,7 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
             }
         });
 
-        return rootView;
+        return _binding.getRoot();
     }
 
     @Override
@@ -108,7 +107,7 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
      * Opens the image options dialog.
      */
     private void openImageOptionsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         String[] imageOptions;
         if (_isImageLoaded) {
             builder.setTitle(R.string.image_change);

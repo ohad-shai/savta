@@ -65,9 +65,9 @@ public class RemediesModel {
      * @implNote NOTE: The main thread will never know when the updates will occur, so it is used mainly for listening (to data updates).
      */
     public LiveData<Remedy> get(String id) {
-        if (_remedy == null) {
+        if (_remedy == null || _remedy.getValue() == null || !_remedy.getValue().getId().equals(id)) {
             _remedy = _modelSql.get(id);
-            this.get(id, null);
+            this.refreshGet(id, null);
         }
         return _remedy;
     }
@@ -79,8 +79,48 @@ public class RemediesModel {
      * @param listener The listener to set.
      * @implNote NOTE: Use this method when the main thread needs to be notified about success & failure results.
      */
-    public void get(String id, OnCompleteListener listener) {
-        // TODO
+    public void refreshGet(String id, OnCompleteListener listener) {
+        // (1) Gets the local last update date indicator:
+        SharedPreferences sharedPreferences = ApplicationContext.getContext().getSharedPreferences(SharedPreferencesConsts.REMEDIES_LAST_UPDATE_DATE, Context.MODE_PRIVATE);
+        long lastUpdateDate = sharedPreferences.getLong(SharedPreferencesConsts.REMEDIES_LAST_UPDATE_DATE, 0);
+
+        // (2) Gets the record from Firebase, only if it's updated (higher than the last update date):
+        _modelFirebase.get(id, lastUpdateDate, new OnGetCompleteListener<Remedy>() {
+            @Override
+            public void onSuccess(Remedy remedy) {
+                // If we get a remedy then it means we need to update our local DB:
+                if (remedy != null) {
+                    // (3) Updates the local SQL DB with the updated records, performs insert or delete if marked as deleted:
+                    long highestDate = lastUpdateDate;
+                    if (remedy.getDateDeleted() != null) {
+                        _modelSql.delete(remedy.getId(), null);
+                    } else {
+                        _modelSql.insert(remedy, null);
+                    }
+                    if (remedy.getDateLastUpdated().getTime() > highestDate) {
+                        highestDate = remedy.getDateLastUpdated().getTime();
+                    }
+
+                    // (4) Updates the local last update date indicator:
+                    if (highestDate > lastUpdateDate) {
+                        SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                        spEditor.putLong(SharedPreferencesConsts.REMEDIES_LAST_UPDATE_DATE, highestDate);
+                        spEditor.apply();
+                    }
+                }
+                // (5) Returns the data to the listeners:
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                if (listener != null) {
+                    listener.onFailure();
+                }
+            }
+        });
     }
 
     /**
@@ -115,7 +155,7 @@ public class RemediesModel {
             @Override
             public void onSuccess(List<Remedy> remedies) {
                 // (3) Updates the local SQL DB with the updated records, performs insert or delete if marked as deleted:
-                long highestDate = 0;
+                long highestDate = lastUpdateDate;
                 for (Remedy remedy : remedies) {
                     if (remedy.getDateDeleted() != null) {
                         _modelSql.delete(remedy.getId(), null);
@@ -128,9 +168,11 @@ public class RemediesModel {
                 }
 
                 // (4) Updates the local last update date indicator:
-                SharedPreferences.Editor spEditor = sharedPreferences.edit();
-                spEditor.putLong(SharedPreferencesConsts.REMEDIES_LAST_UPDATE_DATE, highestDate);
-                spEditor.apply();
+                if (highestDate > lastUpdateDate) {
+                    SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                    spEditor.putLong(SharedPreferencesConsts.REMEDIES_LAST_UPDATE_DATE, highestDate);
+                    spEditor.apply();
+                }
 
                 // (5) Returns the data to the listeners:
                 if (listener != null) {

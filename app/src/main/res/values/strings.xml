@@ -55,6 +55,8 @@
     <string name="account_deleted_successfully">החשבון נמחק בהצלחה</string>
     <string name="remedies_not_found">נראה שלא פרסמו תרופות סבתא עדיין</string>
     <string name="my_remedies_not_found">נראה שלא פירסמת כלום עדיין</string>
+    <string name="remedy_not_exist_anymore">נראה שהתרופה אינה קיימת עוד</string>
+    <string name="remedy_deleted_successfully">התרופה נמחקה בהצלחה</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
