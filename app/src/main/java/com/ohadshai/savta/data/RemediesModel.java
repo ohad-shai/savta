@@ -307,11 +307,11 @@ public class RemediesModel {
      * @param listener The listener to set.
      */
     public void deleteAllByUser(String userId, OnCompleteListener listener) {
-        // Performs local delete:
+        // (1) Performs local delete:
         _modelSql.deleteAllByUser(userId, new OnCompleteListener() {
             @Override
             public void onSuccess() {
-                // Performs cloud delete:
+                // (2) Performs cloud delete:
                 _modelFirebase.deleteAllByUser(userId, listener);
             }
 

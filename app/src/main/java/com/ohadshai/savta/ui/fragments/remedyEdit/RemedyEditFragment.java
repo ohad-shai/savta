@@ -310,7 +310,7 @@ public class RemedyEditFragment extends Fragment implements DialogInterface.OnCl
         _remedy.setTreatmentDescription(_binding.remedyEditTxtTreatment.getText().toString().trim());
         _remedy.setDatePosted(new Date());
 
-        // Updates the remedy with image (upload/replace/delete):
+        // Updates the remedy with an image (upload/replace/delete - according to the action requested):
         RemediesModel.getInstance().updateWithImage(_remedy, _imageActionRequest, _imageBitmapToUpdate, new OnCompleteListener() {
             @Override
             public void onSuccess() {

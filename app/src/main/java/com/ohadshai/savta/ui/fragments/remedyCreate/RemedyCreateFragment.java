@@ -29,8 +29,6 @@ import com.ohadshai.savta.R;
 import com.ohadshai.savta.data.RemediesModel;
 import com.ohadshai.savta.data.UsersModel;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
-import com.ohadshai.savta.data.utils.OnGetCompleteListener;
-import com.ohadshai.savta.data.utils.OnImageUploadCompleteListener;
 import com.ohadshai.savta.databinding.FragmentRemedyCreateBinding;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.entities.User;
