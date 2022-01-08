@@ -166,7 +166,9 @@ public class FeedFragment extends Fragment {
             RemediesModel.getInstance().refreshGetAll(new OnCompleteListener() {
                 @Override
                 public void onSuccess() {
-                    _binding.swipeRefreshLayout.setRefreshing(false);
+                    if (_binding != null) {
+                        _binding.swipeRefreshLayout.setRefreshing(false);
+                    }
                     if (!_isFeedInitializedBefore) {
                         setFeedInitialized();
                     }
@@ -174,8 +176,10 @@ public class FeedFragment extends Fragment {
 
                 @Override
                 public void onFailure() {
-                    _binding.swipeRefreshLayout.setRefreshing(false);
-                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                    if (_binding != null) {
+                        _binding.swipeRefreshLayout.setRefreshing(false);
+                        Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

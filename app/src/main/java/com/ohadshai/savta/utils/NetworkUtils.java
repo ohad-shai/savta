@@ -1,10 +1,11 @@
 package com.ohadshai.savta.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.ohadshai.savta.R;
@@ -32,7 +33,7 @@ public class NetworkUtils {
      * @return Returns true if a network connection is available, otherwise false.
      * @apiNote NOTE: In order to use - the view must contain a coordinator layout somewhere in the root, and the view must be created.
      */
-    public static boolean checkIfNoNetworkToShowSnackBar(Activity activity, View view) {
+    public static boolean checkIfNoNetworkToShowSnackBar(FragmentActivity activity, View view) {
         boolean hasNetwork = NetworkUtils.isNetworkAvailable();
         if (!hasNetwork) {
             Snackbar snackbar = Snackbar.make(view, R.string.no_network_message, Snackbar.LENGTH_LONG);

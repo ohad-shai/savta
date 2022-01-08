@@ -1,5 +1,6 @@
 package com.ohadshai.savta.data.firebase;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
+import com.ohadshai.savta.data.utils.OnImageUploadCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
+import com.ohadshai.savta.utils.BitmapUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +49,13 @@ public class RemediesModelFirebase {
     public static final String FIELD_DATE_LAST_UPDATED = "date_last_updated";
     public static final String FIELD_DATE_DELETED = "date_deleted";
 
+    public static final String STORAGE_REMEDY_IMAGES_FOLDER_PATH = "/remedies";
+    public static final int STORAGE_REMEDY_IMAGES_MAX_WIDTH = 512;
+
     //endregion
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final ModelFirebaseStorage _modelFirebaseStorage = new ModelFirebaseStorage();
 
     public RemediesModelFirebase() {
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
@@ -264,6 +272,12 @@ public class RemediesModelFirebase {
                         }
                     }
                 });
+    }
+
+    public void uploadRemedyImage(Bitmap bitmap, OnImageUploadCompleteListener listener) {
+        String filePath = (STORAGE_REMEDY_IMAGES_FOLDER_PATH + "/" + Calendar.getInstance().getTimeInMillis() + ".jpg");
+        Bitmap resizedBitmap = BitmapUtils.resizeAndKeepRatio(bitmap, STORAGE_REMEDY_IMAGES_MAX_WIDTH);
+        _modelFirebaseStorage.uploadImage(resizedBitmap, filePath, listener);
     }
 
     //endregion

@@ -58,6 +58,8 @@
     <string name="remedy_not_exist_anymore">נראה שהתרופה אינה קיימת עוד</string>
     <string name="remedy_deleted_successfully">התרופה נמחקה בהצלחה</string>
     <string name="account_not_authorized">נראה שהחשבון שלך נחסם או נמחק</string>
+    <string name="camera_intent_failure">לא נמצאה אפליקציית מצלמה במכשיר</string>
+    <string name="gallery_intent_failure">לא נמצאה אפליקציית גלריה במכשיר</string>
 
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>

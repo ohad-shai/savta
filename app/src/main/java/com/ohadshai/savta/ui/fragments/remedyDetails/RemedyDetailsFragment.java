@@ -202,13 +202,17 @@ public class RemedyDetailsFragment extends Fragment {
             RemediesModel.getInstance().refreshGet(_remedy.getId(), new OnCompleteListener() {
                 @Override
                 public void onSuccess() {
-                    _binding.swipeRefreshLayout.setRefreshing(false);
+                    if (_binding != null) {
+                        _binding.swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
 
                 @Override
                 public void onFailure() {
-                    _binding.swipeRefreshLayout.setRefreshing(false);
-                    Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                    if (_binding != null) {
+                        _binding.swipeRefreshLayout.setRefreshing(false);
+                        Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

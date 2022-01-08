@@ -2,6 +2,7 @@ package com.ohadshai.savta.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 
 import androidx.lifecycle.LiveData;
 
@@ -9,6 +10,7 @@ import com.ohadshai.savta.data.firebase.RemediesModelFirebase;
 import com.ohadshai.savta.data.sql.RemediesModelSql;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
+import com.ohadshai.savta.data.utils.OnImageUploadCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.utils.ApplicationContext;
 import com.ohadshai.savta.utils.SharedPreferencesConsts;
@@ -297,6 +299,16 @@ public class RemediesModel {
                 }
             }
         });
+    }
+
+    /**
+     * Uploads a remedy image to the Firebase Storage.
+     *
+     * @param bitmap   The image bitmap to upload.
+     * @param listener The listener to set.
+     */
+    public void uploadRemedyImage(Bitmap bitmap, OnImageUploadCompleteListener listener) {
+        _modelFirebase.uploadRemedyImage(bitmap, listener);
     }
 
     //endregion
