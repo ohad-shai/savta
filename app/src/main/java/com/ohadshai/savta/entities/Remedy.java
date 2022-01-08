@@ -34,6 +34,7 @@ public class Remedy implements Parcelable {
     @NonNull
     private String _treatmentDescription;
 
+    private String _imageFilePath;
     private String _imageUrl;
 
     @NonNull
@@ -92,6 +93,14 @@ public class Remedy implements Parcelable {
         this._treatmentDescription = treatmentDescription;
     }
 
+    public String getImageFilePath() {
+        return _imageFilePath;
+    }
+
+    public void setImageFilePath(String imageFilePath) {
+        this._imageFilePath = imageFilePath;
+    }
+
     public String getImageUrl() {
         return _imageUrl;
     }
@@ -147,6 +156,7 @@ public class Remedy implements Parcelable {
         _name = in.readString();
         _problemDescription = in.readString();
         _treatmentDescription = in.readString();
+        _imageFilePath = in.readString();
         _imageUrl = in.readString();
         _postedByUserId = in.readString();
         _postedByUserName = in.readString();
@@ -172,6 +182,7 @@ public class Remedy implements Parcelable {
         dest.writeString(_name);
         dest.writeString(_problemDescription);
         dest.writeString(_treatmentDescription);
+        dest.writeString(_imageFilePath);
         dest.writeString(_imageUrl);
         dest.writeString(_postedByUserId);
         dest.writeString(_postedByUserName);

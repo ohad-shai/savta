@@ -46,6 +46,7 @@ import java.io.InputStream;
 public class RemedyCreateFragment extends Fragment implements DialogInterface.OnClickListener {
 
     private FragmentRemedyCreateBinding _binding;
+    private boolean _hasImage;
     private Bitmap _imageBitmap;
 
     //region Activity Result Launchers
@@ -158,7 +159,7 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
     private void openImageOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         String[] imageOptions;
-        if (_imageBitmap != null) {
+        if (_hasImage) {
             builder.setTitle(R.string.image_change);
             imageOptions = new String[]{getString(R.string.camera), getString(R.string.gallery), getString(R.string.delete_image)};
         } else {
@@ -179,9 +180,11 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
         _binding.remedyCreateImgPhoto.setImageBitmap(bitmap);
         // Checks if to show/hide the image:
         if (bitmap != null) {
+            _hasImage = true;
             _binding.remedyCreateImgPhoto.setVisibility(View.VISIBLE);
             _binding.remedyCreateLlPhotoLabel.setVisibility(View.GONE);
         } else {
+            _hasImage = false;
             _binding.remedyCreateImgPhoto.setVisibility(View.GONE);
             _binding.remedyCreateLlPhotoLabel.setVisibility(View.VISIBLE);
         }
@@ -251,25 +254,13 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
         remedy.setPostedByUserId(user.getId());
         remedy.setPostedByUserName(user.getFullName());
 
-        // Checks if an image needs to be uploaded first:
-        if (_imageBitmap != null) {
-            RemediesModel.getInstance().uploadRemedyImage(_imageBitmap, new OnImageUploadCompleteListener() {
+        // Checks if an image needs to be uploaded:
+        if (_hasImage) {
+            RemediesModel.getInstance().createWithImage(remedy, _imageBitmap, new OnCompleteListener() {
                 @Override
-                public void onSuccess(String imageUrl) {
-                    remedy.setImageUrl(imageUrl);
-                    RemediesModel.getInstance().create(remedy, new OnCompleteListener() {
-                        @Override
-                        public void onSuccess() {
-                            // Navigates to the previous fragment:
-                            Navigation.findNavController(requireView()).popBackStack();
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            Snackbar.make(requireView(), R.string.failure_message, Snackbar.LENGTH_SHORT).show();
-                            _binding.remedyCreateBtnAdd.stopProgress();
-                        }
-                    });
+                public void onSuccess() {
+                    // Navigates to the previous fragment:
+                    Navigation.findNavController(requireView()).popBackStack();
                 }
 
                 @Override

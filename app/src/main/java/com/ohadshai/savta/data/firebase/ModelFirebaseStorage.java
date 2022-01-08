@@ -46,10 +46,29 @@ public class ModelFirebaseStorage {
                 if (task.isSuccessful()) {
                     if (listener != null) {
                         String imageUrl = task.getResult().toString();
-                        listener.onSuccess(imageUrl);
+                        listener.onSuccess(imageFilePath, imageUrl);
                     }
                 } else {
-                    Log.e("ModelFirebaseStorage", "uploadTask:failure", task.getException());
+                    Log.e("ModelFirebaseStorage", "uploadImage:failure", task.getException());
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteImage(String imageFilePath, com.ohadshai.savta.data.utils.OnCompleteListener listener) {
+        final StorageReference imageRef = storage.getReference().child(imageFilePath);
+        imageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+                } else {
+                    Log.e("ModelFirebaseStorage", "deleteImage:failure", task.getException());
                     if (listener != null) {
                         listener.onFailure();
                     }

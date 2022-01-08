@@ -8,9 +8,9 @@ import androidx.lifecycle.LiveData;
 
 import com.ohadshai.savta.data.firebase.RemediesModelFirebase;
 import com.ohadshai.savta.data.sql.RemediesModelSql;
+import com.ohadshai.savta.data.utils.ImageActionRequest;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
-import com.ohadshai.savta.data.utils.OnImageUploadCompleteListener;
 import com.ohadshai.savta.entities.Remedy;
 import com.ohadshai.savta.utils.ApplicationContext;
 import com.ohadshai.savta.utils.SharedPreferencesConsts;
@@ -57,6 +57,17 @@ public class RemediesModel {
      */
     public void create(Remedy remedy, OnCompleteListener listener) {
         _modelFirebase.create(remedy, listener);
+    }
+
+    /**
+     * Uploads the specified remedy image, and creates the remedy, then notifies the listener on complete.
+     *
+     * @param remedy            The remedy to create.
+     * @param remedyImageBitmap The image bitmap of the remedy to upload.
+     * @param listener          The listener to set.
+     */
+    public void createWithImage(Remedy remedy, Bitmap remedyImageBitmap, OnCompleteListener listener) {
+        _modelFirebase.createWithImage(remedy, remedyImageBitmap, listener);
     }
 
     /**
@@ -268,6 +279,18 @@ public class RemediesModel {
     }
 
     /**
+     * Updates the specified remedy image (deletes current and uploads new), and creates the remedy, then notifies the listener on complete.
+     *
+     * @param remedy             The remedy to update.
+     * @param imageActionRequest The action to perform on the remedy image.
+     * @param remedyImageBitmap  The new image bitmap of the remedy to upload.
+     * @param listener           The listener to set.
+     */
+    public void updateWithImage(Remedy remedy, ImageActionRequest imageActionRequest, Bitmap remedyImageBitmap, OnCompleteListener listener) {
+        _modelFirebase.updateWithImage(remedy, imageActionRequest, remedyImageBitmap, listener);
+    }
+
+    /**
      * Deletes the specified remedy and notifies the listener on complete.
      *
      * @param id       The id of the remedy to delete.
@@ -299,16 +322,6 @@ public class RemediesModel {
                 }
             }
         });
-    }
-
-    /**
-     * Uploads a remedy image to the Firebase Storage.
-     *
-     * @param bitmap   The image bitmap to upload.
-     * @param listener The listener to set.
-     */
-    public void uploadRemedyImage(Bitmap bitmap, OnImageUploadCompleteListener listener) {
-        _modelFirebase.uploadRemedyImage(bitmap, listener);
     }
 
     //endregion

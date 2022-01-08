@@ -171,6 +171,10 @@ public class FeedFragment extends Fragment {
                     }
                     if (!_isFeedInitializedBefore) {
                         setFeedInitialized();
+                        if (_viewModel.getRemedies().getValue().size() < 1) {
+                            _binding.rvRemediesList.setVisibility(View.GONE);
+                            _binding.llRemediesNotFound.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 

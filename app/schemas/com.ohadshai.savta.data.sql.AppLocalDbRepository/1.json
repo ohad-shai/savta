@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5bb7115e6a9ea9ae4610802f91151629",
+    "identityHash": "7a2a1aebf88bc2bd82c4420c42af4048",
     "entities": [
       {
         "tableName": "Remedies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `_name` TEXT NOT NULL, `_problemDescription` TEXT NOT NULL, `_treatmentDescription` TEXT NOT NULL, `_imageUrl` TEXT, `_postedByUserId` TEXT NOT NULL, `_postedByUserName` TEXT NOT NULL, `_datePosted` INTEGER NOT NULL, `_dateLastUpdated` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `_name` TEXT NOT NULL, `_problemDescription` TEXT NOT NULL, `_treatmentDescription` TEXT NOT NULL, `_imageFilePath` TEXT, `_imageUrl` TEXT, `_postedByUserId` TEXT NOT NULL, `_postedByUserName` TEXT NOT NULL, `_datePosted` INTEGER NOT NULL, `_dateLastUpdated` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "_id",
@@ -31,6 +31,12 @@
             "columnName": "_treatmentDescription",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "_imageFilePath",
+            "columnName": "_imageFilePath",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "_imageUrl",
@@ -76,7 +82,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5bb7115e6a9ea9ae4610802f91151629')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a2a1aebf88bc2bd82c4420c42af4048')"
     ]
   }
 }

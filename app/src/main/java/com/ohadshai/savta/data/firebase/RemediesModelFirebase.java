@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ohadshai.savta.data.utils.ImageActionRequest;
 import com.ohadshai.savta.data.utils.OnCompleteListener;
 import com.ohadshai.savta.data.utils.OnGetCompleteListener;
 import com.ohadshai.savta.data.utils.OnImageUploadCompleteListener;
@@ -42,6 +43,7 @@ public class RemediesModelFirebase {
     public static final String FIELD_NAME = "name";
     public static final String FIELD_PROBLEM_DESC = "problem_desc";
     public static final String FIELD_TREATMENT_DESC = "treatment_desc";
+    public static final String FIELD_IMAGE_FILE_PATH = "image_file_path";
     public static final String FIELD_IMAGE_URL = "image_url";
     public static final String FIELD_POSTED_BY_USER_ID = "posted_by_user_id";
     public static final String FIELD_POSTED_BY_USER_NAME = "posted_by_user_name";
@@ -88,6 +90,26 @@ public class RemediesModelFirebase {
                         }
                     }
                 });
+    }
+
+    public void createWithImage(Remedy remedy, Bitmap remedyImageBitmap, OnCompleteListener listener) {
+        // (1) Uploads the remedy image first:
+        this.uploadRemedyImage(remedyImageBitmap, new OnImageUploadCompleteListener() {
+            @Override
+            public void onSuccess(String imageFilePath, String imageUrl) {
+                // (2) Creates the remedy:
+                remedy.setImageFilePath(imageFilePath);
+                remedy.setImageUrl(imageUrl);
+                create(remedy, listener);
+            }
+
+            @Override
+            public void onFailure() {
+                if (listener != null) {
+                    listener.onFailure();
+                }
+            }
+        });
     }
 
     public void get(String id, long lastUpdateDate, OnGetCompleteListener<Remedy> listener) {
@@ -203,6 +225,91 @@ public class RemediesModelFirebase {
                 });
     }
 
+    public void updateWithImage(Remedy remedy, ImageActionRequest imageActionRequest, Bitmap remedyImageBitmap, OnCompleteListener listener) {
+        // Image None:
+        if (imageActionRequest == ImageActionRequest.NONE) {
+            // Just updates the remedy without touching the image:
+            update(remedy, listener);
+        }
+        // Image Create:
+        else if (imageActionRequest == ImageActionRequest.CREATE) {
+            // (1) Uploads the image first:
+            uploadRemedyImage(remedyImageBitmap, new OnImageUploadCompleteListener() {
+                @Override
+                public void onSuccess(String imageFilePath, String imageUrl) {
+                    // (2) Updates the remedy:
+                    remedy.setImageFilePath(imageFilePath);
+                    remedy.setImageUrl(imageUrl);
+                    update(remedy, listener);
+                }
+
+                @Override
+                public void onFailure() {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                }
+            });
+        }
+        // Image Replace:
+        else if (imageActionRequest == ImageActionRequest.REPLACE) {
+            // (1) Deletes the current remedy image first:
+            _modelFirebaseStorage.deleteImage(remedy.getImageFilePath(), new OnCompleteListener() {
+                @Override
+                public void onSuccess() {
+                    // (2) Uploads the new remedy image:
+                    uploadRemedyImage(remedyImageBitmap, new OnImageUploadCompleteListener() {
+                        @Override
+                        public void onSuccess(String imageFilePath, String imageUrl) {
+                            // (3) Updates the remedy:
+                            remedy.setImageFilePath(imageFilePath);
+                            remedy.setImageUrl(imageUrl);
+                            update(remedy, listener);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            if (listener != null) {
+                                listener.onFailure();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure() {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                }
+            });
+        }
+        // Image Delete:
+        else if (imageActionRequest == ImageActionRequest.DELETE) {
+            // (1) Deletes the current remedy image first:
+            _modelFirebaseStorage.deleteImage(remedy.getImageFilePath(), new OnCompleteListener() {
+                @Override
+                public void onSuccess() {
+                    // (2) Updates the remedy:
+                    remedy.setImageFilePath(null);
+                    remedy.setImageUrl(null);
+                    update(remedy, listener);
+                }
+
+                @Override
+                public void onFailure() {
+                    if (listener != null) {
+                        listener.onFailure();
+                    }
+                }
+            });
+        }
+        // Undefined:
+        else {
+            throw new IndexOutOfBoundsException("ImageActionRequest: " + imageActionRequest + " is undefined.");
+        }
+    }
+
     public void delete(String id, OnCompleteListener listener) {
         Map<String, Object> data = new HashMap<>();
         data.put(FIELD_DATE_LAST_UPDATED, FieldValue.serverTimestamp());
@@ -274,12 +381,6 @@ public class RemediesModelFirebase {
                 });
     }
 
-    public void uploadRemedyImage(Bitmap bitmap, OnImageUploadCompleteListener listener) {
-        String filePath = (STORAGE_REMEDY_IMAGES_FOLDER_PATH + "/" + Calendar.getInstance().getTimeInMillis() + ".jpg");
-        Bitmap resizedBitmap = BitmapUtils.resizeAndKeepRatio(bitmap, STORAGE_REMEDY_IMAGES_MAX_WIDTH);
-        _modelFirebaseStorage.uploadImage(resizedBitmap, filePath, listener);
-    }
-
     //endregion
 
     //region Private Methods
@@ -290,6 +391,7 @@ public class RemediesModelFirebase {
         map.put(FIELD_NAME, remedy.getName());
         map.put(FIELD_PROBLEM_DESC, remedy.getProblemDescription());
         map.put(FIELD_TREATMENT_DESC, remedy.getTreatmentDescription());
+        map.put(FIELD_IMAGE_FILE_PATH, remedy.getImageFilePath());
         map.put(FIELD_IMAGE_URL, remedy.getImageUrl());
         map.put(FIELD_POSTED_BY_USER_ID, remedy.getPostedByUserId());
         map.put(FIELD_POSTED_BY_USER_NAME, remedy.getPostedByUserName());
@@ -310,6 +412,7 @@ public class RemediesModelFirebase {
         remedy.setName(document.getString(FIELD_NAME));
         remedy.setProblemDescription(document.getString(FIELD_PROBLEM_DESC));
         remedy.setTreatmentDescription(document.getString(FIELD_TREATMENT_DESC));
+        remedy.setImageFilePath(document.getString(FIELD_IMAGE_FILE_PATH));
         remedy.setImageUrl(document.getString(FIELD_IMAGE_URL));
         remedy.setPostedByUserId(document.getString(FIELD_POSTED_BY_USER_ID));
         remedy.setPostedByUserName(document.getString(FIELD_POSTED_BY_USER_NAME));
@@ -317,6 +420,12 @@ public class RemediesModelFirebase {
         remedy.setDateLastUpdated(document.getDate(FIELD_DATE_LAST_UPDATED));
         remedy.setDateDeleted(document.getDate(FIELD_DATE_DELETED));
         return remedy;
+    }
+
+    private void uploadRemedyImage(Bitmap bitmap, OnImageUploadCompleteListener listener) {
+        String filePath = (STORAGE_REMEDY_IMAGES_FOLDER_PATH + "/" + Calendar.getInstance().getTimeInMillis() + ".jpg");
+        Bitmap resizedBitmap = BitmapUtils.resizeAndKeepRatio(bitmap, STORAGE_REMEDY_IMAGES_MAX_WIDTH);
+        _modelFirebaseStorage.uploadImage(resizedBitmap, filePath, listener);
     }
 
     //endregion
