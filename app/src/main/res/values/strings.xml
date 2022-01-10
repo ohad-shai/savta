@@ -58,9 +58,13 @@
     <string name="remedy_not_exist_anymore">נראה שהתרופה אינה קיימת עוד</string>
     <string name="remedy_deleted_successfully">התרופה נמחקה בהצלחה</string>
     <string name="account_not_authorized">נראה שהחשבון שלך נחסם או נמחק</string>
-    <string name="camera_intent_failure">לא נמצאה אפליקציית מצלמה במכשיר</string>
-    <string name="gallery_intent_failure">לא נמצאה אפליקציית גלריה במכשיר</string>
 
+    <!--  Intent Utils  -->
+    <string name="gallery_intent_not_found">לא נמצאה אפליקציית גלריה במכשיר</string>
+    <string name="camera_intent_not_found">לא נמצאה אפליקציית מצלמה במכשיר</string>
+    <string name="web_browser_intent_not_found">לא נמצאה אפליקציית דפדפן במכשיר</string>
+    <string name="network_settings_intent_not_found">לא נמצאה אפליקציית הגדרות רשת במכשיר</string>
+    
     <!--  Navigation Drawer Menu Items:  -->
     <string name="menu_feed">לוח התרופות</string>
     <string name="menu_user_remedies">התרופות שפרסמתי</string>

@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <application
         android:name=".utils.ApplicationContext"
         android:allowBackup="true"
@@ -33,5 +35,25 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.Savta.NoActionBar" />
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.ACTION_PICK" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_VIEW" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_WIRELESS_SETTINGS" />
+        </intent>
+    </queries>
 
 </manifest>

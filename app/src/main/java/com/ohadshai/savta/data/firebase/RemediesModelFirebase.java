@@ -52,7 +52,7 @@ public class RemediesModelFirebase {
     public static final String FIELD_DATE_DELETED = "date_deleted";
 
     public static final String STORAGE_REMEDY_IMAGES_FOLDER_PATH = "/remedies";
-    public static final int STORAGE_REMEDY_IMAGES_MAX_WIDTH = 512;
+    public static final int STORAGE_REMEDY_IMAGES_MAX_WIDTH = 640;
 
     //endregion
 

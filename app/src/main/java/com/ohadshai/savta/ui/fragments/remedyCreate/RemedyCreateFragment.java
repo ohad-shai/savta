@@ -128,11 +128,21 @@ public class RemedyCreateFragment extends Fragment implements DialogInterface.On
         switch (index) {
             // Camera:
             case 0:
-                _cameraLauncher.launch(IntentUtils.camera());
+                Intent cameraIntent = IntentUtils.camera();
+                if (cameraIntent != null) {
+                    _cameraLauncher.launch(cameraIntent);
+                } else {
+                    Snackbar.make(requireView(), R.string.camera_intent_not_found, Snackbar.LENGTH_SHORT).show();
+                }
                 break;
             // Gallery:
             case 1:
-                _galleryLauncher.launch(IntentUtils.gallery());
+                Intent galleryIntent = IntentUtils.gallery();
+                if (galleryIntent != null) {
+                    _galleryLauncher.launch(galleryIntent);
+                } else {
+                    Snackbar.make(requireView(), R.string.gallery_intent_not_found, Snackbar.LENGTH_SHORT).show();
+                }
                 break;
             // Delete Image:
             case 2:
